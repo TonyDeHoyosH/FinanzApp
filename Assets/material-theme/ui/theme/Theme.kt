@@ -1,4 +1,5 @@
-package com.antonioselvas.finanzasapp.ui.theme
+package com.example.compose
+import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -6,9 +7,11 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 
 @Immutable
@@ -251,44 +254,28 @@ private val highContrastDarkColorScheme = darkColorScheme(
 
 val extendedLight = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueLight,
-      onIconsBgBlueLight,
-      iconsBgBlueContainerLight,
-      onIconsBgBlueContainerLight,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueLight,
+  onIconsBgBlueLight,
+  iconsBgBlueContainerLight,
+  onIconsBgBlueContainerLight,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedLight,
-      onIconsBgRedLight,
-      iconsBgRedContainerLight,
-      onIconsBgRedContainerLight,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedLight,
+  onIconsBgRedLight,
+  iconsBgRedContainerLight,
+  onIconsBgRedContainerLight,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowLight,
-      onIconsBgYellowLight,
-      iconsBgYellowContainerLight,
-      onIconsBgYellowContainerLight,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowLight,
+  onIconsBgYellowLight,
+  iconsBgYellowContainerLight,
+  onIconsBgYellowContainerLight,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenLight,
-      onIconsBgGreenLight,
-      iconsBgGreenContainerLight,
-      onIconsBgGreenContainerLight,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenLight,
+  onIconsBgGreenLight,
+  iconsBgGreenContainerLight,
+  onIconsBgGreenContainerLight,
   ),
   yellow = ColorFamily(
   iconsBgYellowLight,
@@ -314,44 +301,28 @@ val extendedLight = ExtendedColorScheme(
 
 val extendedDark = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueDark,
-      onIconsBgBlueDark,
-      iconsBgBlueContainerDark,
-      onIconsBgBlueContainerDark,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueDark,
+  onIconsBgBlueDark,
+  iconsBgBlueContainerDark,
+  onIconsBgBlueContainerDark,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedDark,
-      onIconsBgRedDark,
-      iconsBgRedContainerDark,
-      onIconsBgRedContainerDark,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedDark,
+  onIconsBgRedDark,
+  iconsBgRedContainerDark,
+  onIconsBgRedContainerDark,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowDark,
-      onIconsBgYellowDark,
-      iconsBgYellowContainerDark,
-      onIconsBgYellowContainerDark,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowDark,
+  onIconsBgYellowDark,
+  iconsBgYellowContainerDark,
+  onIconsBgYellowContainerDark,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenDark,
-      onIconsBgGreenDark,
-      iconsBgGreenContainerDark,
-      onIconsBgGreenContainerDark,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenDark,
+  onIconsBgGreenDark,
+  iconsBgGreenContainerDark,
+  onIconsBgGreenContainerDark,
   ),
   yellow = ColorFamily(
   iconsBgYellowDark,
@@ -377,44 +348,28 @@ val extendedDark = ExtendedColorScheme(
 
 val extendedLightMediumContrast = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueLightMediumContrast,
-      onIconsBgBlueLightMediumContrast,
-      iconsBgBlueContainerLightMediumContrast,
-      onIconsBgBlueContainerLightMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueLightMediumContrast,
+  onIconsBgBlueLightMediumContrast,
+  iconsBgBlueContainerLightMediumContrast,
+  onIconsBgBlueContainerLightMediumContrast,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedLightMediumContrast,
-      onIconsBgRedLightMediumContrast,
-      iconsBgRedContainerLightMediumContrast,
-      onIconsBgRedContainerLightMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedLightMediumContrast,
+  onIconsBgRedLightMediumContrast,
+  iconsBgRedContainerLightMediumContrast,
+  onIconsBgRedContainerLightMediumContrast,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowLightMediumContrast,
-      onIconsBgYellowLightMediumContrast,
-      iconsBgYellowContainerLightMediumContrast,
-      onIconsBgYellowContainerLightMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowLightMediumContrast,
+  onIconsBgYellowLightMediumContrast,
+  iconsBgYellowContainerLightMediumContrast,
+  onIconsBgYellowContainerLightMediumContrast,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenLightMediumContrast,
-      onIconsBgGreenLightMediumContrast,
-      iconsBgGreenContainerLightMediumContrast,
-      onIconsBgGreenContainerLightMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenLightMediumContrast,
+  onIconsBgGreenLightMediumContrast,
+  iconsBgGreenContainerLightMediumContrast,
+  onIconsBgGreenContainerLightMediumContrast,
   ),
   yellow = ColorFamily(
   iconsBgYellowLightMediumContrast,
@@ -440,44 +395,28 @@ val extendedLightMediumContrast = ExtendedColorScheme(
 
 val extendedLightHighContrast = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueLightHighContrast,
-      onIconsBgBlueLightHighContrast,
-      iconsBgBlueContainerLightHighContrast,
-      onIconsBgBlueContainerLightHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueLightHighContrast,
+  onIconsBgBlueLightHighContrast,
+  iconsBgBlueContainerLightHighContrast,
+  onIconsBgBlueContainerLightHighContrast,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedLightHighContrast,
-      onIconsBgRedLightHighContrast,
-      iconsBgRedContainerLightHighContrast,
-      onIconsBgRedContainerLightHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedLightHighContrast,
+  onIconsBgRedLightHighContrast,
+  iconsBgRedContainerLightHighContrast,
+  onIconsBgRedContainerLightHighContrast,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowLightHighContrast,
-      onIconsBgYellowLightHighContrast,
-      iconsBgYellowContainerLightHighContrast,
-      onIconsBgYellowContainerLightHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowLightHighContrast,
+  onIconsBgYellowLightHighContrast,
+  iconsBgYellowContainerLightHighContrast,
+  onIconsBgYellowContainerLightHighContrast,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenLightHighContrast,
-      onIconsBgGreenLightHighContrast,
-      iconsBgGreenContainerLightHighContrast,
-      onIconsBgGreenContainerLightHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenLightHighContrast,
+  onIconsBgGreenLightHighContrast,
+  iconsBgGreenContainerLightHighContrast,
+  onIconsBgGreenContainerLightHighContrast,
   ),
   yellow = ColorFamily(
   iconsBgYellowLightHighContrast,
@@ -503,44 +442,28 @@ val extendedLightHighContrast = ExtendedColorScheme(
 
 val extendedDarkMediumContrast = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueDarkMediumContrast,
-      onIconsBgBlueDarkMediumContrast,
-      iconsBgBlueContainerDarkMediumContrast,
-      onIconsBgBlueContainerDarkMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueDarkMediumContrast,
+  onIconsBgBlueDarkMediumContrast,
+  iconsBgBlueContainerDarkMediumContrast,
+  onIconsBgBlueContainerDarkMediumContrast,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedDarkMediumContrast,
-      onIconsBgRedDarkMediumContrast,
-      iconsBgRedContainerDarkMediumContrast,
-      onIconsBgRedContainerDarkMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedDarkMediumContrast,
+  onIconsBgRedDarkMediumContrast,
+  iconsBgRedContainerDarkMediumContrast,
+  onIconsBgRedContainerDarkMediumContrast,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowDarkMediumContrast,
-      onIconsBgYellowDarkMediumContrast,
-      iconsBgYellowContainerDarkMediumContrast,
-      onIconsBgYellowContainerDarkMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowDarkMediumContrast,
+  onIconsBgYellowDarkMediumContrast,
+  iconsBgYellowContainerDarkMediumContrast,
+  onIconsBgYellowContainerDarkMediumContrast,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenDarkMediumContrast,
-      onIconsBgGreenDarkMediumContrast,
-      iconsBgGreenContainerDarkMediumContrast,
-      onIconsBgGreenContainerDarkMediumContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenDarkMediumContrast,
+  onIconsBgGreenDarkMediumContrast,
+  iconsBgGreenContainerDarkMediumContrast,
+  onIconsBgGreenContainerDarkMediumContrast,
   ),
   yellow = ColorFamily(
   iconsBgYellowDarkMediumContrast,
@@ -566,44 +489,28 @@ val extendedDarkMediumContrast = ExtendedColorScheme(
 
 val extendedDarkHighContrast = ExtendedColorScheme(
   iconsBgBlue = ColorFamily(
-      iconsBgBlueDarkHighContrast,
-      onIconsBgBlueDarkHighContrast,
-      iconsBgBlueContainerDarkHighContrast,
-      onIconsBgBlueContainerDarkHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgBlueDarkHighContrast,
+  onIconsBgBlueDarkHighContrast,
+  iconsBgBlueContainerDarkHighContrast,
+  onIconsBgBlueContainerDarkHighContrast,
   ),
   iconsBgRed = ColorFamily(
-      iconsBgRedDarkHighContrast,
-      onIconsBgRedDarkHighContrast,
-      iconsBgRedContainerDarkHighContrast,
-      onIconsBgRedContainerDarkHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgRedDarkHighContrast,
+  onIconsBgRedDarkHighContrast,
+  iconsBgRedContainerDarkHighContrast,
+  onIconsBgRedContainerDarkHighContrast,
   ),
   iconsBgYellow = ColorFamily(
-      iconsBgYellowDarkHighContrast,
-      onIconsBgYellowDarkHighContrast,
-      iconsBgYellowContainerDarkHighContrast,
-      onIconsBgYellowContainerDarkHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgYellowDarkHighContrast,
+  onIconsBgYellowDarkHighContrast,
+  iconsBgYellowContainerDarkHighContrast,
+  onIconsBgYellowContainerDarkHighContrast,
   ),
   iconsBgGreen = ColorFamily(
-      iconsBgGreenDarkHighContrast,
-      onIconsBgGreenDarkHighContrast,
-      iconsBgGreenContainerDarkHighContrast,
-      onIconsBgGreenContainerDarkHighContrast,
-      yellowLight,
-      onYellowLight,
-      yellowContainerLight,
-      onYellowContainerLight,
+  iconsBgGreenDarkHighContrast,
+  onIconsBgGreenDarkHighContrast,
+  iconsBgGreenContainerDarkHighContrast,
+  onIconsBgGreenContainerDarkHighContrast,
   ),
   yellow = ColorFamily(
   iconsBgYellowDarkHighContrast,
@@ -632,26 +539,15 @@ data class ColorFamily(
     val color: Color,
     val onColor: Color,
     val colorContainer: Color,
-    val onColorContainer: Color,
-    val yellowLight1: Color,
-    val onYellowLight1: Color,
-    val yellowContainerLight1: Color,
-    val onYellowContainerLight1: Color
+    val onColorContainer: Color
 )
 
 val unspecified_scheme = ColorFamily(
-    Color.Unspecified,
-    Color.Unspecified,
-    Color.Unspecified,
-    Color.Unspecified,
-    yellowLight,
-    onYellowLight,
-    yellowContainerLight,
-    onYellowContainerLight
+    Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
 )
 
 @Composable
-fun FinanzasAppTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -669,10 +565,8 @@ fun FinanzasAppTheme(
 
   MaterialTheme(
     colorScheme = colorScheme,
-    typography = Typography,
+    typography = AppTypography,
     content = content
   )
 }
-
-
 
