@@ -56,4 +56,15 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+//    My dependecies
+//    Navigation
+//    implementation(libs.androidx.navigation.compose)
+
+//    Extend icons
+    implementation(libs.androidx.material.icons.extended)
+
+//    Google fonts
+    implementation(libs.androidx.ui.text.google.fonts)
 }
