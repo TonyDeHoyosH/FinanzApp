@@ -1,7 +1,7 @@
 package com.antonioselvas.finanzasapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF005BB3)
+val primaryLight = Color(0xFF388EFF)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFF0073E0)
 val onPrimaryContainerLight = Color(0xFFFEFCFF)
