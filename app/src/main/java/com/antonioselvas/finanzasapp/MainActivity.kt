@@ -12,9 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FinancesAppTheme(
-                dynamicColor = false
-            ) {
+            FinancesAppTheme{
                 NavManager()
             }
         }
