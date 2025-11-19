@@ -12,6 +12,10 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.BALANCE_
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GoalView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.ONBOARDING_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_CATEGORY_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_FIXED_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFixedView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
 
 @Composable
@@ -40,7 +44,19 @@ fun NavManager(){
             composable(
                 BALANCE_ROUTE
             ) {
-                AddBalanceView()
+                AddBalanceView(navController)
+            }
+
+            composable(
+                SELECT_CATEGORY_ROUTE
+            ) {
+                SelectCategoriesView(navController)
+            }
+
+            composable(
+                SELECT_FIXED_ROUTE
+            ) {
+                SelectFixedView(navController)
             }
 
 

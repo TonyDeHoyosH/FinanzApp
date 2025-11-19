@@ -32,6 +32,9 @@ import androidx.navigation.NavController
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
+import primaryColor
+import primaryText
+import secondaryText
 
 const val ONBOARDING_ROUTE = "OnBoarding"
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +59,7 @@ fun WelcomeView(navController: NavController){
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 80.dp)
+                    .padding(bottom = 80.dp)
                 ,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -67,7 +70,7 @@ fun WelcomeView(navController: NavController){
                     ,
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor =  MaterialTheme.colorScheme.primary,
+                        containerColor =  primaryColor,
                     ),
                     onClick = {
                         navController.navigate(GOAL_ROUTE)
@@ -106,7 +109,8 @@ fun WelcomeContent(paddingValues: PaddingValues){
             text = "¡Bienvenido a FinanzApp!",
             fontFamily = JosefinSans,
             fontWeight = FontWeight.Bold,
-            fontSize = 28.sp
+            fontSize = 28.sp,
+            color = primaryText
         )
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
         Text(
@@ -116,7 +120,7 @@ fun WelcomeContent(paddingValues: PaddingValues){
             fontWeight = FontWeight.Normal,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = secondaryText
         )
 
 

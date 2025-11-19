@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.Button
@@ -34,20 +36,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import bgBlue
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
-import com.antonioselvas.finanzasapp.ui.theme.ExtendedTheme
-import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
+import primaryColor
+import primaryText
+import secondaryText
 
 const val BALANCE_ROUTE = "Balance"
 
 @Composable
-fun AddBalanceView(){
-    var selectedGoal by remember { mutableStateOf("") }
+fun AddBalanceView(navController: NavHostController) {
+    var balance by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             Column(
@@ -67,7 +73,7 @@ fun AddBalanceView(){
                         .width(84.dp)
                         .height(84.dp)
                         .background(
-                            color = ExtendedTheme.colors.iconsBgBlue.colorContainer,
+                            color = bgBlue,
                             shape = CircleShape
                         )
                     ,
@@ -81,7 +87,7 @@ fun AddBalanceView(){
                         ,
                         imageVector = Icons.Outlined.Savings,
                         contentDescription = "",
-                        tint = ExtendedTheme.colors.blue.color,
+                        tint = primaryColor,
                     )
                 }
                 Spacer(Modifier.height(20.dp))
@@ -91,7 +97,8 @@ fun AddBalanceView(){
                             "disponible actiualmente?",
                     fontFamily = JosefinSans,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = primaryText
                 )
 
             }
@@ -100,7 +107,7 @@ fun AddBalanceView(){
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 80.dp)
+                    .padding(bottom = 80.dp)
                 ,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -110,10 +117,12 @@ fun AddBalanceView(){
                     ,
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
+                        containerColor = primaryColor,
                     ),
-                    enabled = selectedGoal.isNotEmpty(),
-                    onClick = {}
+                    enabled = balance.isNotEmpty(),
+                    onClick = {
+                        navController.navigate(SELECT_CATEGORY_ROUTE)
+                    }
                 ) {
                     Text("Siguiente")
                 }
@@ -121,62 +130,82 @@ fun AddBalanceView(){
 
         }
     ) {
-        AddBalanceContent(it)
+        AddBalanceContent(it, balance = balance,
+            onBalanceChange = { b -> balance = b })
     }
 }
 
 
 @Composable
-fun AddBalanceContent(paddingValues: PaddingValues) {
-    var balance by remember { mutableStateOf("") }
-
+fun AddBalanceContent(
+    paddingValues: PaddingValues,
+    balance: String,
+    onBalanceChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
-        TextField(
+        Spacer(modifier = Modifier.height(40.dp))
+
+        // Usar BasicTextField para mejor control del cursor
+        BasicTextField(
+            value = balance,
+            onValueChange = { newValue ->
+                // Filtrar solo números y punto decimal
+                if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
+                    onBalanceChange(newValue)
+                }
+            },
             textStyle = LocalTextStyle.current.copy(
                 textAlign = TextAlign.Center,
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            value = balance,
-            onValueChange = { balance = it },
-            colors = TextFieldDefaults.colors(
-                unfocusedTextColor = Color.LightGray,
-                focusedTextColor = ExtendedTheme.colors.blue.color,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            placeholder = { Text(
-                "$0.00",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 48.sp,
+                fontSize = 56.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.LightGray
-            ) },
+                color = if (balance.isEmpty()) secondaryText else primaryColor
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Done
+            ),
             singleLine = true,
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (balance.isEmpty()) {
+                        Text(
+                            text = "$0.00",
+                            fontSize = 56.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = secondaryText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    innerTextField()
+                }
+            }
         )
-        Spacer(modifier = Modifier.height(10.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
-            "No te preocupes, puedes cambiarlo\ndespues",
+            "No te preocupes, puedes cambiarlo\ndespués",
             textAlign = TextAlign.Center,
-            color = Color.LightGray
+            color = secondaryText,
+            fontSize = 14.sp
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddBalance(){
-    FinancesAppTheme{
-        AddBalanceView()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewAddBalance(){
+//    FinancesAppTheme{
+//        AddBalanceView(navController)
+//    }
+//}

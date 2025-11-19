@@ -14,14 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.Group
-import androidx.compose.material.icons.outlined.Receipt
-import androidx.compose.material.icons.outlined.Savings
-import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.CreditCard
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,21 +45,22 @@ import com.antonioselvas.finanzasapp.components.onboarding.Stepper
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import green
 import primaryColor
+import primaryText
 import red
 import yellow
 
-const val GOAL_ROUTE = "Goal"
-
-// Data class para los objetivos
-data class Goal(
+data class Option(
     val label: String,
     val icon: ImageVector,
     val colorType: String
 )
-@OptIn(ExperimentalMaterial3Api::class)
+
+const val SELECT_FIXED_ROUTE = "SelectFixed"
+
+
 @Composable
-fun GoalView(navController: NavHostController) {
-    var selectedGoal by remember { mutableStateOf("") }
+fun SelectFixedView(navController: NavHostController) {
+    var selectedOption by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             Column(
@@ -73,15 +71,17 @@ fun GoalView(navController: NavHostController) {
             ) {
                 Stepper(
                     totalSteps = 4,
-                    currentStep = 0
+                    currentStep = 3
                 )
                 Spacer(Modifier.height(20.dp))
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "¿Cuál es tu objetivo\nprincipal?",
+                    text = "¿Tienes gastos\n" +
+                            "recurrentes?",
                     fontFamily = JosefinSans,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = primaryText
                 )
             }
         },
@@ -99,37 +99,32 @@ fun GoalView(navController: NavHostController) {
                     ,
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
+                        containerColor = primaryColor,
                     ),
-                    enabled = selectedGoal.isNotEmpty(),
-                    onClick = {
-                        navController.navigate(BALANCE_ROUTE)
-                    }
+                    enabled = selectedOption.isNotEmpty(),
+                    onClick = {}
                 ) {
-                    Text("Siguiente")
+                    Text("Finalizar")
                 }
             }
 
         }
     ) {
-        GoalContent(it, selectedGoal = selectedGoal,
-            onGoalSelected = { goal -> selectedGoal = goal })
+        SelectFixedContent(it, selectedOption = selectedOption,
+            onOptionSelected = { goal -> selectedOption = goal })
     }
 }
-
 @Composable
-fun GoalContent(
+fun SelectFixedContent(
     paddingValues: PaddingValues,
-    selectedGoal: String,
-    onGoalSelected: (String) -> Unit
-) {
-    val goals = remember {
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+){
+    val options = remember {
         listOf(
-            Goal("Ahorrar dinero", Icons.Outlined.Savings, "yellow"),
-            Goal("Controlar mis gastos", Icons.Outlined.Receipt, "blue"),
-            Goal("Dividir cuentas", Icons.Outlined.Group, "red"),
-            Goal("Pagar gastos fijos", Icons.Outlined.Schedule, "green"),
-            Goal("Ver estadísticas", Icons.Outlined.BarChart, "yellow"),
+            Option("Sí, tengo gastos mensuales", Icons.Outlined.CreditCard, "green"),
+            Option("No, solo gastos ocasionales", Icons.Outlined.Block, "red"),
+            Option("Dividir cuentas", Icons.Outlined.Info, "yellow"),
         )
     }
     LazyColumn(
@@ -139,9 +134,9 @@ fun GoalContent(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(goals) { goal ->
+        items(options) { option ->
             // Determinar colores según el tipo
-            val iconColor = when (goal.colorType) {
+            val iconColor = when (option.colorType) {
                 "yellow" -> yellow
                 "blue" -> primaryColor
                 "red" -> red
@@ -149,7 +144,7 @@ fun GoalContent(
                 else -> green
             }
 
-            val  bgColor = when (goal.colorType) {
+            val  bgColor = when (option.colorType) {
                 "yellow" -> bgYellow
                 "blue" -> bgBlue
                 "red" -> bgRed
@@ -161,22 +156,21 @@ fun GoalContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(77.dp),
-                label = goal.label,
-                selected = selectedGoal == goal.label,
-                imageVector = goal.icon,
+                label = option.label,
+                selected = selectedOption == option.label,
+                imageVector = option.icon,
                 iconColor = iconColor,
                 bgColor = bgColor,
-                onClick = { onGoalSelected(goal.label) }
+                onClick = { onOptionSelected(option.label) }
             )
         }
     }
 }
-
-
+//
 //@Preview(showBackground = true)
 //@Composable
-//fun PreviewGoal(){
+//fun PreviewFixed(){
 //    FinancesAppTheme{
-//        GoalView()
+//        SelectFixedView(navController)
 //    }
 //}

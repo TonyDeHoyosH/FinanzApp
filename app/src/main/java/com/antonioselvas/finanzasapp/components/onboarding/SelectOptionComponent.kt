@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antonioselvas.finanzasapp.ui.theme.ColorFamily
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 
 
@@ -40,8 +39,8 @@ fun SelectCardComponent(
     label: String,
     selected: Boolean,
     imageVector: ImageVector,
-    iconColor: ColorFamily,
-    bgColor: ColorFamily,
+    iconColor: Color,
+    bgColor: Color,
     selectedIcon: ImageVector = Icons.Default.CheckCircle,
     selectedIconColor: Color =
         if (selected) MaterialTheme.colorScheme.primary
@@ -76,7 +75,7 @@ fun SelectCardComponent(
                     .height(42.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(
-                        color = bgColor.colorContainer
+                        color = bgColor
                     )
                 ,
                 contentAlignment = Alignment.Center,
@@ -89,7 +88,7 @@ fun SelectCardComponent(
                     ,
                     imageVector = imageVector,
                     contentDescription = "",
-                    tint = iconColor.onColorContainer,
+                    tint = iconColor,
                 )
             }
 
