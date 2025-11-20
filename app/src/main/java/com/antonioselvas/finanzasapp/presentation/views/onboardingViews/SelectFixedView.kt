@@ -3,23 +3,17 @@ package com.antonioselvas.finanzasapp.presentation.views.onboardingViews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -40,6 +33,7 @@ import bgBlue
 import bgGreen
 import bgRed
 import bgYellow
+import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
 import com.antonioselvas.finanzasapp.components.onboarding.SelectCardComponent
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
@@ -77,7 +71,7 @@ fun SelectFixedView(navController: NavHostController) {
                 Text(
                     textAlign = TextAlign.Center,
                     text = "¿Tienes gastos\n" +
-                            "recurrentes?",
+                            "fijos?",
                     fontFamily = JosefinSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -86,27 +80,10 @@ fun SelectFixedView(navController: NavHostController) {
             }
         },
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 80.dp)
-                ,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    modifier = Modifier
-                        .width(352.dp)
-                    ,
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = primaryColor,
-                    ),
-                    enabled = selectedOption.isNotEmpty(),
-                    onClick = {}
-                ) {
-                    Text("Finalizar")
-                }
-            }
+            NextButtonComponent(
+                { },
+                "Finalizar"
+            )
 
         }
     ) {
@@ -122,9 +99,9 @@ fun SelectFixedContent(
 ){
     val options = remember {
         listOf(
-            Option("Sí, tengo gastos mensuales", Icons.Outlined.CreditCard, "green"),
-            Option("No, solo gastos ocasionales", Icons.Outlined.Block, "red"),
-            Option("Dividir cuentas", Icons.Outlined.Info, "yellow"),
+            Option("Sí, tengo gastos", Icons.Outlined.CreditCard, "green"),
+            Option("No, solo ocasionales", Icons.Outlined.Block, "red"),
+            Option("Aun no lo se", Icons.Outlined.Info, "yellow"),
         )
     }
     LazyColumn(
