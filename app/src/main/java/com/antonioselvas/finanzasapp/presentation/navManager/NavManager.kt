@@ -7,11 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
+import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.AddBalanceView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.BALANCE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GoalView
-import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.ONBOARDING_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_CATEGORY_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_FIXED_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
@@ -27,10 +29,10 @@ fun NavManager(){
 
         NavHost(
             navController = navController,
-            startDestination = ONBOARDING_ROUTE
+            startDestination = HOME_ROUTE
         ){
             composable(
-                ONBOARDING_ROUTE
+                WELCOME_ROUTE
             ){
                 WelcomeView(navController)
             }
@@ -59,6 +61,11 @@ fun NavManager(){
                 SelectFixedView(navController)
             }
 
+            composable(
+                HOME_ROUTE
+            ) {
+                HomeView()
+            }
 
         }
 
