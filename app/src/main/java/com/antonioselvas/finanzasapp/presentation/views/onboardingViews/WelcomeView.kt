@@ -27,7 +27,7 @@ import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import primaryText
 import secondaryText
 
-const val ONBOARDING_ROUTE = "OnBoarding"
+const val WELCOME_ROUTE = "WelcomeView"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeView(navController: NavController){
