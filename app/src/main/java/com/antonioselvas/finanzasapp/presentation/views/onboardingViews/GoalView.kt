@@ -82,7 +82,8 @@ fun GoalView(navController: NavHostController) {
         bottomBar = {
             NextButtonComponent(
                 { navController.navigate(BALANCE_ROUTE) },
-                "Siguiente"
+                "Siguiente",
+                enable = selectedGoal.isNotEmpty()
             )
 
         }

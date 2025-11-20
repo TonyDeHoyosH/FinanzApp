@@ -49,7 +49,8 @@ fun WelcomeView(navController: NavController){
         bottomBar = {
             NextButtonComponent(
                 { navController.navigate(GOAL_ROUTE) },
-                "Siguiente"
+                "Siguiente",
+                enable = true
             )
 
         }

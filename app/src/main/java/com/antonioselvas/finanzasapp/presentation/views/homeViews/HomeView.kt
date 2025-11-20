@@ -83,7 +83,7 @@ fun HomeView(){
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
-                modifier = Modifier.padding(horizontal = 12.dp).clip(CircleShape),
+                modifier = Modifier,
                 title = {
                     Text(
                         text = "Hola, Antonio",
@@ -94,6 +94,7 @@ fun HomeView(){
                 },
                 navigationIcon = {
                     IconButton(
+                        modifier = Modifier.padding(start = 10.dp),
                         onClick = {}
                     ) {
                         Icon(
@@ -108,6 +109,7 @@ fun HomeView(){
                 actions = {
                     IconButton(
                         modifier = Modifier
+                            .padding(end = 10.dp)
                             .shadow(
                                 elevation = 10.dp,
                                 shape = CircleShape,
@@ -216,6 +218,7 @@ fun HomeContent(paddingValues: PaddingValues){
             )
             Spacer(modifier = Modifier.padding(vertical = 6.dp))
             LazyColumn(
+                modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Gasto 1: MotoTaxi

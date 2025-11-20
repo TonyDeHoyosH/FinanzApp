@@ -19,7 +19,8 @@ import primaryColor
 @Composable
 fun NextButtonComponent(
     navController: () -> Unit,
-    label: String
+    label: String,
+    enable: Boolean
 ){
     Row(
         modifier = Modifier
@@ -39,7 +40,8 @@ fun NextButtonComponent(
             ),
             onClick = {
                 navController()
-            }
+            },
+            enabled = enable
         ) {
             Text(label)
         }

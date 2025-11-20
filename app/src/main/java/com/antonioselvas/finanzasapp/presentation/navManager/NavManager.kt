@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
@@ -21,52 +22,59 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFi
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
 
 @Composable
-fun NavManager(){
+fun NavManager() {
     val context = LocalContext.current
     val dataStore = StoreOnBoarding(context)
-    val store = dataStore.getOnBoarding.collectAsState(false)
+    val isOnboardingComplete = dataStore.getOnBoarding.collectAsState(true)
     val navController = rememberNavController()
 
-        NavHost(
-            navController = navController,
-            startDestination = HOME_ROUTE
+    val startRoute = if (isOnboardingComplete.value) {
+        "main_graph"
+    } else {
+        "onboarding_graph"
+    }
+    NavHost(
+        navController = navController,
+        startDestination = startRoute
+    ) {
+        navigation(
+            startDestination = WELCOME_ROUTE,
+            route = "onboarding_graph"
+        ) {
+            composable(WELCOME_ROUTE) { WelcomeView(navController) }
+
+            composable(GOAL_ROUTE) { GoalView(navController) }
+
+            composable(BALANCE_ROUTE) { AddBalanceView(navController) }
+
+            composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(navController) }
+
+            composable(SELECT_FIXED_ROUTE) {
+                SelectFixedView(
+                    navController = navController,
+                    onComplete = {
+                        navController.navigate("main_graph") {
+                            popUpTo("onboarding_graph") { inclusive = true }
+                        }
+                    })
+            }
+        }
+
+        navigation(
+            startDestination = MAIN_NAV_ROUTE,
+            route = "main_graph"
         ){
             composable(
-                WELCOME_ROUTE
-            ){
-                WelcomeView(navController)
-            }
-
-            composable(
-                GOAL_ROUTE
+                MAIN_NAV_ROUTE
             ) {
-                GoalView(navController)
+                MainNavManager()
             }
-
-            composable(
-                BALANCE_ROUTE
-            ) {
-                AddBalanceView(navController)
-            }
-
-            composable(
-                SELECT_CATEGORY_ROUTE
-            ) {
-                SelectCategoriesView(navController)
-            }
-
-            composable(
-                SELECT_FIXED_ROUTE
-            ) {
-                SelectFixedView(navController)
-            }
-
-            composable(
-                HOME_ROUTE
-            ) {
-                HomeView()
-            }
-
         }
+
+
+
+
+
+    }
 
 }
