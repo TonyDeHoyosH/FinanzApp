@@ -86,7 +86,7 @@ fun AddBalanceView(navController: NavHostController) {
                 Text(
                     textAlign = TextAlign.Center,
                     text = "¿Cuánto dinero tienes\n" +
-                            "disponible actiualmente?",
+                            "disponible actualmente?",
                     fontFamily = JosefinSans,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -98,7 +98,8 @@ fun AddBalanceView(navController: NavHostController) {
         bottomBar = {
             NextButtonComponent(
                 { navController.navigate(SELECT_CATEGORY_ROUTE) },
-                "Siguiente"
+                "Siguiente",
+                enable = balance.isNotEmpty()
             )
 
         }
@@ -136,6 +137,7 @@ fun AddBalanceContent(
                 textAlign = TextAlign.Center,
                 fontSize = 56.sp,
                 fontWeight = FontWeight.Bold,
+                lineHeight = 56.sp,
                 color = if (balance.isEmpty()) secondaryText else primaryColor
             ),
             keyboardOptions = KeyboardOptions(

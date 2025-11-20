@@ -83,7 +83,8 @@ fun SelectCategoriesView(navController: NavHostController) {
         bottomBar = {
             NextButtonComponent(
                 { navController.navigate(SELECT_FIXED_ROUTE) },
-                "Siguiente"
+                "Siguiente",
+                enable = selectedCategories.isNotEmpty()
             )
         }
     ) { paddingValues ->
