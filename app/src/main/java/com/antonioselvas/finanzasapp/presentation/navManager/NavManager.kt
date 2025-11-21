@@ -25,10 +25,10 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeV
 fun NavManager() {
     val context = LocalContext.current
     val dataStore = StoreOnBoarding(context)
-    val isOnboardingComplete = dataStore.getOnBoarding.collectAsState(true)
+    val isOnboardingComplete = dataStore.getOnBoarding.collectAsState(false)
     val navController = rememberNavController()
 
-    val startRoute = if (isOnboardingComplete.value) {
+    val startRoute = if (true) {
         "main_graph"
     } else {
         "onboarding_graph"
