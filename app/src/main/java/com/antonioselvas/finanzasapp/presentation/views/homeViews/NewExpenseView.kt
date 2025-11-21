@@ -1,0 +1,187 @@
+package com.antonioselvas.finanzasapp.presentation.views.homeViews
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.antonioselvas.finanzasapp.components.ButtonComponent
+import com.antonioselvas.finanzasapp.components.TextFieldComponent
+import primaryColor
+import primaryText
+import secondaryText
+
+
+const val NEW_EXPENSE_ROUTE = "NewExpense"
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewExpenseView(navController: NavHostController) {
+    var expense by remember { mutableStateOf("") }
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Nuevo Gasto ",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = primaryText
+                        )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {navController.popBackStack()}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
+    ) {
+        NewExpenseContent(it, expense = expense,
+            onExpenseChange = { e -> expense = e }, navController)
+    }
+}
+
+
+@Composable
+fun NewExpenseContent(
+    paddingValues: PaddingValues,
+    expense: String,
+    onExpenseChange: (String) -> Unit,
+    navController: NavHostController
+){
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier.height(170.dp),
+            verticalArrangement = Arrangement.Center
+        ){
+        BasicTextField(
+            value = expense,
+            onValueChange = { newValue ->
+
+                if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
+                    onExpenseChange(newValue)
+                }
+            },
+            textStyle = LocalTextStyle.current.copy(
+                textAlign = TextAlign.Center,
+                fontSize = 56.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 56.sp,
+                color = if (expense.isEmpty()) secondaryText else primaryColor
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Done
+            ),
+            singleLine = true,
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (expense.isEmpty()) {
+                        Text(
+                            text = "$0.00",
+                            fontSize = 56.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = secondaryText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+        }
+
+        Column(
+            modifier = Modifier.height(360.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(28.dp)
+        ) {
+            TextFieldComponent(
+                label = "Descripcion",
+                placeHolder = "Ej: Café con amigos",
+                value = "",
+                onValue = {}
+            )
+            TextFieldComponent(
+                label = "Descripcion",
+                placeHolder = "Ej: Café con amigos",
+                value = "",
+                onValue = {}
+            )
+            TextFieldComponent(
+                label = "Descripcion",
+                placeHolder = "Ej: Café con amigos",
+                value = "",
+                onValue = {}
+            )
+            TextFieldComponent(
+                label = "Descripcion",
+                placeHolder = "Ej: Café con amigos",
+                value = "",
+                onValue = {}
+            )
+
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 18.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            ButtonComponent(
+                navController = { navController.navigate(HOME_ROUTE) },
+                label = "Registrar Gasto",
+                enable = true
+            )
+        }
+
+    }
+}
+
+
