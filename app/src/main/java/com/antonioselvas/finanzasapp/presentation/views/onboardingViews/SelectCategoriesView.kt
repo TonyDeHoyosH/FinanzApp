@@ -36,14 +36,12 @@ import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
 import com.antonioselvas.finanzasapp.components.onboarding.SelectCategoryComponent
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
+import com.antonioselvas.finanzasapp.models.Category
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import primaryText
 import secondaryText
 
-data class Category(
-    val name: String,
-    val icon: ImageVector
-)
+
 
 const val SELECT_CATEGORY_ROUTE = "SelectCategory"
 

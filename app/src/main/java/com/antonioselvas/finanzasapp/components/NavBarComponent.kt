@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.antonioselvas.finanzasapp.models.BottomNavItem
@@ -78,7 +79,13 @@ fun BottomNavigationBar(navController: NavController){
                     navController.navigate(item.route)
                 },
                 label = {
-                    Text(text = item.label)
+                    Text(
+                        text = item.label,
+                        fontSize = 12.sp,
+                        color = if (index == selectedItemIndex){
+                            primaryColor
+                        } else secondaryText
+                    )
                 },
                 icon = {
                     BadgedBox(

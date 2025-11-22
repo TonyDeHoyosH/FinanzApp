@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.ButtonComponent
+import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
+import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
 import primaryColor
 import primaryText
@@ -42,10 +45,15 @@ import secondaryText
 
 const val NEW_EXPENSE_ROUTE = "NewExpense"
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewExpenseView(navController: NavHostController) {
     var expense by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -55,11 +63,11 @@ fun NewExpenseView(navController: NavHostController) {
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
-                        )
+                    )
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = {navController.popBackStack()}
+                        onClick = { navController.popBackStack() }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
@@ -70,8 +78,18 @@ fun NewExpenseView(navController: NavHostController) {
             )
         }
     ) {
-        NewExpenseContent(it, expense = expense,
-            onExpenseChange = { e -> expense = e }, navController)
+        NewExpenseContent(
+            it,
+            expense = expense,
+            onExpenseChange = { e -> expense = e },
+            category = category,
+            onCategory = { c -> category = c },
+            type = type,
+            onType = { t -> type = t },
+            selectedDate = selectedDate,
+            onSelectedDate = { d -> selectedDate = d },
+            navController
+        )
     }
 }
 
@@ -81,105 +99,141 @@ fun NewExpenseContent(
     paddingValues: PaddingValues,
     expense: String,
     onExpenseChange: (String) -> Unit,
-    navController: NavHostController
-){
+    category: String,
+    onCategory: (String) -> Unit,
+    type: String,
+    onType: (String) -> Unit,
+    selectedDate: String,
+    onSelectedDate: (String) -> Unit,
+    navController: NavHostController,
+//    navController: NavHostController
+) {
+    val categories: MutableList<String> = remember {
+        mutableListOf(
+            "Alimentación",
+            "Transporte",
+            "Hogar",
+            "Servicio publico",
+            "Ropa",
+            "Salud",
+            "Educación",
+            "Entretenimiento",
+            "Mascotas",
+            "Otros"
+        )
+    }
+
+    val types: MutableList<String> = remember {
+        mutableListOf(
+            "Imprevisto",
+            "Ahorro",
+            "Deuda",
+            "Gusto personal",
+            "Regalo"
+        )
+    }
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
+            .padding(horizontal = 8.dp)
     ) {
         Column(
             modifier = Modifier.height(170.dp),
             verticalArrangement = Arrangement.Center
-        ){
-        BasicTextField(
-            value = expense,
-            onValueChange = { newValue ->
-
-                if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                    onExpenseChange(newValue)
-                }
-            },
-            textStyle = LocalTextStyle.current.copy(
-                textAlign = TextAlign.Center,
-                fontSize = 56.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 56.sp,
-                color = if (expense.isEmpty()) secondaryText else primaryColor
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true,
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (expense.isEmpty()) {
-                        Text(
-                            text = "$0.00",
-                            fontSize = 56.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = secondaryText,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    innerTextField()
-                }
-            }
-        )
-        }
-
-        Column(
-            modifier = Modifier.height(360.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(28.dp)
         ) {
-            TextFieldComponent(
-                label = "Descripcion",
-                placeHolder = "Ej: Café con amigos",
-                value = "",
-                onValue = {}
-            )
-            TextFieldComponent(
-                label = "Descripcion",
-                placeHolder = "Ej: Café con amigos",
-                value = "",
-                onValue = {}
-            )
-            TextFieldComponent(
-                label = "Descripcion",
-                placeHolder = "Ej: Café con amigos",
-                value = "",
-                onValue = {}
-            )
-            TextFieldComponent(
-                label = "Descripcion",
-                placeHolder = "Ej: Café con amigos",
-                value = "",
-                onValue = {}
-            )
+            BasicTextField(
+                value = expense,
+                onValueChange = { newValue ->
 
+                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
+                        onExpenseChange(newValue)
+                    }
+                },
+                textStyle = LocalTextStyle.current.copy(
+                    textAlign = TextAlign.Center,
+                    fontSize = 56.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 56.sp,
+                    color = if (expense.isEmpty()) secondaryText else primaryColor
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (expense.isEmpty()) {
+                            Text(
+                                text = "$0.00",
+                                fontSize = 56.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = secondaryText,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
+            )
         }
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 18.dp),
+                .height(360.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
+            TextFieldComponent(
+                label = "Descripcion",
+                placeHolder = "Ej: Café con amigos",
+                value = "",
+                onValue = {}
+            )
+            DropDownComponent(
+                label = "Categoria",
+                listOfCategories = categories,
+                selectedText = category,
+                onSelectedText = { c -> onCategory(c) }
+            )
+            DropDownComponent(
+                label = "Tipo",
+                listOfCategories = types,
+                selectedText = type,
+                onSelectedText = { t -> onType(t) }
+            )
+            DatePickerFieldToModal(
+                modifier = Modifier,
+                onSelectedDate = { d -> onSelectedDate(d) }
+            )
+
+
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
         ) {
             ButtonComponent(
-                navController = { navController.navigate(HOME_ROUTE) },
+                navController = {
+                    navController.navigate(HOME_ROUTE)
+                },
                 label = "Registrar Gasto",
                 enable = true
+
+
             )
+            Spacer(modifier = Modifier.padding(bottom = 32.dp))
         }
+
 
     }
 }
