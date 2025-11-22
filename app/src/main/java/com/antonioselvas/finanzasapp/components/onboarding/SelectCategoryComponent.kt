@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bgBlue
-import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.Category
+import com.antonioselvas.finanzasapp.models.Category
 import primaryColor
 import secondaryText
 

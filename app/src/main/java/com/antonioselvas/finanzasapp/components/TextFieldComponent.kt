@@ -1,6 +1,7 @@
 package com.antonioselvas.finanzasapp.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +14,17 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import primaryColor
+import secondaryText
 import textField
 
 
@@ -31,20 +37,24 @@ fun TextFieldComponent(
 ){
 
     TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = value,
+        modifier = Modifier
+            .fillMaxWidth(),
+        value = value.ifEmpty {
+            placeHolder
+        },
         onValueChange = onValue,
         label = {
-            Text(label)
+            Text(
+                text =label,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Normal,
+                color = secondaryText )
         },
-        placeholder = {
-            Text(placeHolder)
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = primaryColor,
-            unfocusedBorderColor = textField
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.Transparent,
+            focusedContainerColor = Color.White
         ),
-        maxLines = 2
+        singleLine = true
     )
 }
 
