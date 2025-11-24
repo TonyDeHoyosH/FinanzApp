@@ -44,7 +44,7 @@ import primaryColor
 import primaryText
 
 
-const val FIXED_EXPENSES_ROUTE = "FixedExpensesView"
+const val FIXED_EXPENSES_ROUTE = "FixedExpense"
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,7 +120,7 @@ fun FixedExpenseContent(paddingValues: PaddingValues){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Monto Total Mensual:",
+                    text = "Gasto Total Mensual:",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal,
                     color = primaryText

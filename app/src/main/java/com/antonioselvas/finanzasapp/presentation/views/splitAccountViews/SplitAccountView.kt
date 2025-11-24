@@ -29,9 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.SelectCardComponent
-import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FixedExpenseContent
-import gradientRed
 import gradientYellow
 import primaryColor
 import primaryText
@@ -40,10 +39,9 @@ import primaryText
 const val SPLIT_ACCOUNT_ROUTE = "SplitAccount"
 
 
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SplitAccountView(){
+fun SplitAccountView(navController: NavHostController) {
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier
@@ -85,12 +83,12 @@ fun SplitAccountView(){
             }
         }
     ) {
-        SplitAccountContent(it)
+        SplitAccountContent(it, navController)
     }
 }
 
 @Composable
-fun SplitAccountContent(paddingValues: PaddingValues){
+fun SplitAccountContent(paddingValues: PaddingValues, navController: NavHostController){
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -112,7 +110,7 @@ fun SplitAccountContent(paddingValues: PaddingValues){
                         iconColor = Color(0xFFFF6F00),
                         bgColor = Color(0xFFFFE0B2),
                         selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        onClick = {},
+                        onClick = {navController.navigate(SPLIT_ACCOUNT_DETAIL_ROUTE)},
                         date = "14 jul",
                         amount = "-$25.50",
                         amountColor = Color(0xFFE53935),
