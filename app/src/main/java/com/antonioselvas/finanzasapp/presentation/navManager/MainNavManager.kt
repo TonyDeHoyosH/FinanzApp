@@ -14,7 +14,9 @@ import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.NEW_EXPENSE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.NewExpenseView
+import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_DETAIL_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountDetailsView
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountView
 
 
@@ -44,11 +46,9 @@ fun MainNavManager(){
 
             composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView() }
 
-            composable(
-                SPLIT_ACCOUNT_ROUTE
-            ) {
-                SplitAccountView()
-            }
+            composable(SPLIT_ACCOUNT_DETAIL_ROUTE) { SplitAccountDetailsView(navController) }
+
+            composable(SPLIT_ACCOUNT_ROUTE) { SplitAccountView(navController) }
         }
     }
 

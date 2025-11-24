@@ -50,7 +50,7 @@ import primaryColor
 import primaryText
 
 
-const val HOME_ROUTE = "HomeView"
+const val HOME_ROUTE = "Home"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
