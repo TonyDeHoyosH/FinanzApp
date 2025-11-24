@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,16 +16,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.CreditCard
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.LocalTaxi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,28 +32,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bgBlue
 import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
-import primaryColor
+import green
 import primaryText
+import yellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectCardComponent(
+fun CardFixedExpense(
     label: String,
     imageVector: ImageVector,
     iconColor: Color,
     bgColor: Color,
-    selectedIcon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    // Parámetros opcionales para el segundo diseño
-    date: String? = null,
+    type: String? = null,
+    day: String? = null,
     amount: String? = null,
+    alert: String,
+    colorAlert: Int,
     amountColor: Color = Color.Red,
-    labelColor: Color = primaryText,
-    numPersons: Int? = null
+    labelColor: Color = primaryText
 ){
     Column(
         modifier = modifier
@@ -108,7 +101,7 @@ fun SelectCardComponent(
             // Columna con label y fecha (si existe)
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = label,
@@ -120,80 +113,87 @@ fun SelectCardComponent(
                 )
 
                 // Mostrar fecha solo si no es null
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                date?.let {
+                Row {
+                type?.let {
                     Text(
                         text = it,
                         fontFamily = JosefinSans,
                         fontWeight = FontWeight.Light,
-                        fontSize = 18.sp,
+                        fontSize = 14.sp,
                         color = Color.Gray,
                         maxLines = 1,
                     )
                 }
-                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    if (numPersons != null){
+                    if (day != null){
                         Text(
-                            text = "$numPersons",
+                            text = ", ",
+                            color = Color.Gray,
+                            )
+                    }
+                    day?.let {
+                        Text(
+                            text = it,
                             fontFamily = JosefinSans,
                             fontWeight = FontWeight.Light,
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             color = Color.Gray,
                             maxLines = 1,
-                            )
-                        Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            tint = Color.Gray,
-                            contentDescription = "Num Of Persons",
-                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
-
             }
 
             // Mostrar monto si existe, sino mostrar flecha
-            if (amount != null) {
+            Column(
+                modifier = Modifier.padding(end = 14.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+
                 Text(
-                    text = amount,
+                    text = amount?: "",
                     fontFamily = JosefinSans,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp,
                     color = amountColor,
-                    modifier = Modifier.padding(end = 8.dp)
                 )
-
+                Text(
+                    text = alert,
+                    fontFamily = JosefinSans,
+                    fontWeight = FontWeight.Light,
+                    fontSize = 14.sp,
+                    color = when(colorAlert){
+                        1 -> green
+                        2 -> yellow
+                        else -> Color.Gray
+                    },
+                    maxLines = 1,
+                )
             }
 
-            // Ícono de navegación
-            IconButton(onClick = { onClick() }) {
-                Icon(
-                    imageVector = selectedIcon,
-                    contentDescription = "",
-                    tint = primaryText
-                )
-            }
         }
     }
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewCard(){
-//    FinancesAppTheme {
-//         Column {
-//             SelectCardComponent(
-//                 label = "Añadir Gastos",
-//                 imageVector = Icons.Outlined.CreditCard,
-//                 iconColor = primaryColor,
-//                 bgColor = bgBlue,
-//                 selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-//                 onClick = {}
-//             )
-//         }
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun PreviewCard(){
+    FinancesAppTheme {
+         Column {
+             CardFixedExpense(
+                 label = "MotoTaxi",
+                 imageVector = Icons.Outlined.LocalTaxi,
+                 iconColor = Color(0xFF2C2C2C),
+                 bgColor = Color(0xFFF5F5F5),
+                 onClick = {},
+                 type = "Mensual",
+                 day = "15",
+                 amount = "-$10.00",
+                 amountColor = Color(0xFFE53935),
+                 labelColor = Color(0xFF2C2C2C),
+                 alert = "Pediente",
+                 colorAlert = 1
+             )
+         }
+    }
+}

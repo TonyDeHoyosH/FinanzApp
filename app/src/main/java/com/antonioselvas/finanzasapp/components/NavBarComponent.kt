@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.antonioselvas.finanzasapp.models.BottomNavItem
+import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.STATISTICS_ROUTE
@@ -51,7 +52,7 @@ fun BottomNavigationBar(navController: NavController){
             label = "Compartidas"
         ),
         BottomNavItem(
-            route = HOME_ROUTE,
+            route = FIXED_EXPENSES_ROUTE,
             selectedIcon = Icons.Filled.Discount,
             unselectedIcon = Icons.Outlined.Discount,
             description = "FixedExpenses",

@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.BottomNavigationBar
+import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FixedExpenseView
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.NEW_EXPENSE_ROUTE
@@ -39,6 +41,8 @@ fun MainNavManager(){
             }
 
             composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController) }
+
+            composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView() }
 
             composable(
                 SPLIT_ACCOUNT_ROUTE

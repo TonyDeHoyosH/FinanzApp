@@ -56,7 +56,7 @@ const val HOME_ROUTE = "HomeView"
 @Composable
 fun HomeView(navController: NavHostController) {
     Scaffold(
-        containerColor = Color.Transparent, // ← CLAVE
+        containerColor = Color.Transparent,
         modifier = Modifier
             .fillMaxSize()
             .background(
