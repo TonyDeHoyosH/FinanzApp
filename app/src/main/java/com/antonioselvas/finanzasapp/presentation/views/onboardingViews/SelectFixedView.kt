@@ -36,8 +36,12 @@ import bgYellow
 import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
 import com.antonioselvas.finanzasapp.components.onboarding.SelectCardComponent
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
+import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import green
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import primaryColor
 import primaryText
 import red
@@ -53,7 +57,7 @@ const val SELECT_FIXED_ROUTE = "SelectFixed"
 
 
 @Composable
-fun SelectFixedView(navController: NavHostController, onComplete: () -> Unit) {
+fun SelectFixedView(navController: NavHostController, onComplete: () -> Unit,  store: StoreOnBoarding) {
     var selectedOption by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
@@ -82,10 +86,16 @@ fun SelectFixedView(navController: NavHostController, onComplete: () -> Unit) {
         bottomBar = {
 
             NextButtonComponent(
-                { onComplete() },
+                {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        store.saveOnBoarding(true)
+                    }
+                    onComplete()
+                },
                 "Finalizar",
                 enable = selectedOption.isNotEmpty()
             )
+
 
         }
     ) {

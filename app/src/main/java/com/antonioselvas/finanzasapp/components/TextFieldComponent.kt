@@ -39,9 +39,7 @@ fun TextFieldComponent(
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
-        value = value.ifEmpty {
-            placeHolder
-        },
+        value = value,
         onValueChange = onValue,
         label = {
             Text(
@@ -49,6 +47,9 @@ fun TextFieldComponent(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Normal,
                 color = secondaryText )
+        },
+        placeholder = {
+            label
         },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,

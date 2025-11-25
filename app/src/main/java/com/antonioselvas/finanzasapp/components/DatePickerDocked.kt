@@ -40,9 +40,7 @@ fun DatePickerFieldToModal(
     var showModal by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf<Long?>(null) }
     TextField(
-        value = (selectedDate?.let { convertMillisToDate(it) } ?: "").ifEmpty {
-            "MM/DD/YYYY"
-        },
+        value = (selectedDate?.let { convertMillisToDate(it) } ?: ""),
         onValueChange = { },
         label = {
             Text(
@@ -78,15 +76,20 @@ fun DatePickerFieldToModal(
 
     if (showModal) {
         DatePickerModal(
-            onDateSelected = { onSelectedDate(convertMillisToDate(it)) },
+            onDateSelected = { millis ->
+                selectedDate = millis
+                millis?.let {
+                    onSelectedDate(convertMillisToDate(it))
+                }
+            },
             onDismiss = { showModal = false }
         )
     }
 }
 
-fun convertMillisToDate(millis: Long?): String {
+fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis!!))
+    return formatter.format(Date(millis))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
