@@ -1,18 +1,15 @@
 package com.antonioselvas.finanzasapp.presentation.navManager
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.Alert
-import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
 import com.antonioselvas.finanzasapp.presentation.views.LOGIN_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.LoginView
 import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
@@ -35,31 +32,31 @@ import com.antonioselvas.finanzasapp.viewModels.OnboardingViewModel
 @Composable
 fun NavManager(loginVM: AuthViewModel) {
     val onboardingVM = remember { OnboardingViewModel() }
-    val navController = rememberNavController()
+    val rootNavController = rememberNavController()
 
 
     NavHost(
-        navController = navController,
+        navController = rootNavController,
         startDestination = "splash_graph"
     ) {
         navigation(
             startDestination = WELCOME_ROUTE,
             route = "onboarding_graph"
         ) {
-            composable(WELCOME_ROUTE) { WelcomeView(navController) }
-            composable(REGISTER_ROUTE) { RegisterView(navController, loginVM) }
-            composable(LOGIN_ROUTE) { LoginView(navController, loginVM) }
-            composable(GOAL_ROUTE) { GoalView(navController) { goal ->
+            composable(WELCOME_ROUTE) { WelcomeView(rootNavController) }
+            composable(REGISTER_ROUTE) { RegisterView(rootNavController, loginVM) }
+            composable(LOGIN_ROUTE) { LoginView(rootNavController, loginVM) }
+            composable(GOAL_ROUTE) { GoalView(rootNavController) { goal ->
                 onboardingVM.tempGoal = goal
-                navController.navigate(BALANCE_ROUTE)
+                rootNavController.navigate(BALANCE_ROUTE)
             }}
-            composable(BALANCE_ROUTE) { AddBalanceView(navController){ balance ->
+            composable(BALANCE_ROUTE) { AddBalanceView(rootNavController){ balance ->
                 onboardingVM.tempInitialBalance = balance
-                navController.navigate(SELECT_CATEGORY_ROUTE)
+                rootNavController.navigate(SELECT_CATEGORY_ROUTE)
             } }
-            composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(navController){ categories ->
+            composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(rootNavController){ categories ->
                 onboardingVM.tempCategories = categories.toList()
-                navController.navigate(SELECT_FIXED_ROUTE)
+                rootNavController.navigate(SELECT_FIXED_ROUTE)
             } }
             composable(SELECT_FIXED_ROUTE) {
                 var showError by remember { mutableStateOf(false) }
@@ -72,17 +69,17 @@ fun NavManager(loginVM: AuthViewModel) {
                         confirmText = "Aceptar",
                         onConfirmClick = {
                             showError = false
-                            navController.navigate("onboarding_graph")
+                            rootNavController.navigate("onboarding_graph")
                         },
                         onDismissClick = {
                             showError = false
-                            navController.navigate("onboarding_graph")
+                            rootNavController.navigate("onboarding_graph")
                         }
                     )
                 }
 
                 SelectFixedView(
-                    navController = navController
+                    navController = rootNavController
                 ) { fixedOption ->
                     onboardingVM.tempFixedExpensesOption = fixedOption
                     onboardingVM.saveOnboardingData(
@@ -92,7 +89,7 @@ fun NavManager(loginVM: AuthViewModel) {
                         fixedExpensesOption = onboardingVM.tempFixedExpensesOption,
                         onSuccess = {
                             loginVM.setOnboardingCompleted {
-                                navController.navigate("main_graph") {
+                                rootNavController.navigate("main_graph") {
                                     popUpTo("onboarding_graph") { inclusive = true }
                                 }
                             }
@@ -110,7 +107,7 @@ fun NavManager(loginVM: AuthViewModel) {
             startDestination = MAIN_NAV_ROUTE,
             route = "main_graph"
         ) {
-            composable(MAIN_NAV_ROUTE) { MainNavManager() }
+            composable(MAIN_NAV_ROUTE) { MainNavManager(loginVM, rootNavController) }
         }
 
         navigation(
@@ -119,7 +116,7 @@ fun NavManager(loginVM: AuthViewModel) {
         ) {
             composable(SPLASH_ROUTE) {
                 SplashView(
-                    navController = navController,
+                    navController = rootNavController,
                 )
             }
         }

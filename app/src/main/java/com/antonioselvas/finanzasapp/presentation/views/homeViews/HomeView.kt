@@ -83,7 +83,9 @@ fun HomeView(navController: NavHostController) {
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.padding(start = 10.dp),
-                        onClick = {}
+                        onClick = {
+                            navController.navigate(USER_ACCOUNT_ROUTE)
+                        }
                     ) {
                         Icon(
                             modifier = Modifier
