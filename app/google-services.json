@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "76080073288",
+    "project_id": "finanzapp-7be0a",
+    "storage_bucket": "finanzapp-7be0a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76080073288:android:ccb6ba75698edc5e90a67d",
+        "android_client_info": {
+          "package_name": "com.antonioselvas.finanzasapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA1y0Bzl76zldSn6ntwnEK2tcydG0gS5k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

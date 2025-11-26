@@ -3,8 +3,9 @@ package com.antonioselvas.finanzasapp.presentation.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material3.*
@@ -15,41 +16,48 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.R
+import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
+import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
+import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
 import primaryColor
 import primaryText
 import secondaryText
 
 
-const val LOGIN_ROUTE = "loginView"
+const val LOGIN_ROUTE = "login"
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun LoginView() {
+fun LoginView(navController: NavHostController, loginVM: AuthViewModel) {
     Scaffold(
-        
     ) {
-        LoginContent(it)
+        LoginContent(it, navController, loginVM)
     }
 }
 
 
 
 @Composable
-fun LoginContent(paddingValues: PaddingValues) {
+fun LoginContent(
+    paddingValues: PaddingValues,
+    navController: NavHostController,
+    loginVM: AuthViewModel
+) {
+    var isLoading by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
-            .padding(horizontal = 18.dp),
+            .padding(horizontal = 18.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -92,8 +100,8 @@ fun LoginContent(paddingValues: PaddingValues) {
             TextFieldComponent(
                 label = "Correo Electronico",
                 placeHolder = "Ingrese su correo electronico",
-                value = "",
-                onValue = {}
+                value = email,
+                onValue = {email = it}
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -113,15 +121,25 @@ fun LoginContent(paddingValues: PaddingValues) {
             TextFieldComponent(
                 label = "Contraseña",
                 placeHolder = "Ingrese su contraseña",
-                value = "",
-                onValue = {}
+                value = password,
+                onValue = { password = it}
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
         ButtonComponent(
-            navController = {},
-            label = "Continuar",
-            enable = true
+            navController = {
+                if (!isLoading) {
+                    isLoading = true
+                    loginVM.login(email, password) {
+                        isLoading = false
+                        navController.navigate("main_graph") {
+                            popUpTo(LOGIN_ROUTE) { inclusive = true }
+                        }
+                    }
+                }
+            },
+            label = if (isLoading) "Cargando..." else "Continuar",
+            enable = email.isNotBlank() && password.isNotBlank() && !isLoading
         )
         Spacer(modifier = Modifier.height(16.dp))
         Column(
@@ -136,12 +154,27 @@ fun LoginContent(paddingValues: PaddingValues) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                modifier = Modifier.clickable(onClick = { /*TODO*/ }),
+                modifier = Modifier.clickable(onClick = { navController.navigate(REGISTER_ROUTE) }),
                 text = "Registrate",
                 color = primaryColor,
                 textDecoration = TextDecoration.Underline,
             )
 
+            }
+        }
+        if (loginVM.showAlert) {
+            Alert(
+                title = "Alerta",
+                message = "Usuario y/o contraseña incorrectos",
+                confirmText = "Aceptar",
+                onConfirmClick = {
+                    loginVM.closeAlert()
+                    email = ""
+                    password = ""
+                }
+            ) {
+                email = ""
+                password = ""
             }
         }
     }

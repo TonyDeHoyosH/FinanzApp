@@ -1,7 +1,5 @@
 package com.antonioselvas.finanzasapp.presentation.views
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.antonioselvas.finanzasapp.R
+import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.delay
 import primaryColor
 
@@ -26,25 +26,36 @@ const val SPLASH_ROUTE = "SplashView"
 
 
 @Composable
-fun SplashView(navController: NavController, isOnboardingComplete: Boolean?) {
-    Scaffold(
-        containerColor = primaryColor
-    ) {
+fun SplashView(navController: NavController) {
+    val auth = FirebaseAuth.getInstance()
+    val user = auth.currentUser
+
+    Scaffold(containerColor = primaryColor) {
         SplashContent(it) {
-            android.util.Log.d("SplashView", "isOnboardingComplete en Splash = $isOnboardingComplete")
-
-            val completed = isOnboardingComplete
-            if (completed == null) {
-                return@SplashContent
-            }
-
-            val route = if (completed) "main_graph" else "onboarding_graph"
-            navController.navigate(route) {
-                popUpTo(SPLASH_ROUTE) { inclusive = true }
+            if (user == null) {
+                navController.navigate("onboarding_graph") {
+                    popUpTo(SPLASH_ROUTE) { inclusive = true }
+                }
+            } else {
+                FirebaseFirestore.getInstance().collection("Users").document(user.uid)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        val completed = document?.getBoolean("onboardingCompleted") ?: false
+                        val route = if (completed) "main_graph" else "onboarding_graph"
+                        navController.navigate(route) {
+                            popUpTo(SPLASH_ROUTE) { inclusive = true }
+                        }
+                    }
+                    .addOnFailureListener {
+                        navController.navigate("onboarding_graph") {
+                            popUpTo(SPLASH_ROUTE) { inclusive = true }
+                        }
+                    }
             }
         }
     }
 }
+
 
 
 
@@ -54,7 +65,7 @@ fun SplashContent(paddingValues: PaddingValues, onTimeout: () -> Unit) {
         LottieCompositionSpec.RawRes(R.raw.finanzapp_animation)
     )
 
-    // Captura siempre la última lambda pasada desde SplashView
+
     val currentOnTimeout by androidx.compose.runtime.rememberUpdatedState(onTimeout)
 
     LaunchedEffect(Unit) {

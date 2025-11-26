@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+//    Firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -50,6 +52,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.navigation.compose)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,6 +74,16 @@ dependencies {
 
 //    Lottie
     implementation(libs.lottie.compose.v671)
+
+//    Firebase
+    implementation(libs.firebase.analytics)
+    implementation(platform(libs.firebase.bom))
+
+//    FirebaseAuth
+    implementation(libs.firebase.auth)
+
+//    FireStore
+    implementation(libs.firebase.firestore)
 
 
 

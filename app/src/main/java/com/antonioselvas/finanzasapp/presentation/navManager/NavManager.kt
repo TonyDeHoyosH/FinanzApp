@@ -8,10 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
+import com.antonioselvas.finanzasapp.presentation.views.LOGIN_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.LoginView
+import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.RegisterView
 import com.antonioselvas.finanzasapp.presentation.views.SPLASH_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.SplashView
-import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
-import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.AddBalanceView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.BALANCE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
@@ -22,15 +24,16 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_F
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFixedView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
+import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
 
 @Composable
-fun NavManager() {
+fun NavManager(loginVM: AuthViewModel) {
     val context = LocalContext.current
     val dataStore = StoreOnBoarding(context)
     val isOnboardingCompleteState = dataStore.getOnBoarding.collectAsState(initial = null)
     val navController = rememberNavController()
     val isOnboardingComplete = isOnboardingCompleteState.value
-    android.util.Log.d("NavManager", "isOnboardingComplete (state) = $isOnboardingComplete")
+
 
     NavHost(
         navController = navController,
@@ -41,6 +44,8 @@ fun NavManager() {
             route = "onboarding_graph"
         ) {
             composable(WELCOME_ROUTE) { WelcomeView(navController) }
+            composable(REGISTER_ROUTE) { RegisterView(navController, loginVM) }
+            composable(LOGIN_ROUTE) { LoginView(navController, loginVM) }
             composable(GOAL_ROUTE) { GoalView(navController) }
             composable(BALANCE_ROUTE) { AddBalanceView(navController) }
             composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(navController) }
@@ -48,11 +53,13 @@ fun NavManager() {
                 SelectFixedView(
                     navController = navController,
                     onComplete = {
-                        navController.navigate("main_graph") {
-                            popUpTo("onboarding_graph") { inclusive = true }
+                        loginVM.setOnboardingCompleted {
+                            navController.navigate("main_graph") {
+                                popUpTo("onboarding_graph") { inclusive = true }
+                            }
                         }
                     },
-                    store = dataStore
+
                 )
             }
         }
@@ -71,7 +78,6 @@ fun NavManager() {
             composable(SPLASH_ROUTE) {
                 SplashView(
                     navController = navController,
-                    isOnboardingComplete = isOnboardingComplete
                 )
             }
         }

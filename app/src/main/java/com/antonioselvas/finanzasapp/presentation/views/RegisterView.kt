@@ -15,17 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,41 +32,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.wear.compose.material.dialog.Alert
 import com.antonioselvas.finanzasapp.R
+import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
+import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
 import primaryColor
 import primaryText
 import secondaryText
 
+
+const val REGISTER_ROUTE = "register"
+
+
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun RegisterView(){
+fun RegisterView(navController: NavHostController, loginVM: AuthViewModel) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
     ) {
-        RegisterContent(it)
+        RegisterContent(it, navController, loginVM)
     }
 }
 
 
 @Composable
-fun RegisterContent(paddingValues: PaddingValues){
+fun RegisterContent(
+    paddingValues: PaddingValues,
+    navController: NavHostController,
+    loginVM: AuthViewModel
+){
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column(
@@ -108,10 +106,10 @@ fun RegisterContent(paddingValues: PaddingValues){
             )
             Spacer(modifier = Modifier.width(6.dp))
             TextFieldComponent(
-                label = "Correo Electronico",
-                placeHolder = "Ingrese su correo electronico",
-                value = "",
-                onValue = {}
+                label = "Username",
+                placeHolder = "Ingresa tu nombre",
+                value = name,
+                onValue = { name = it }
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -129,10 +127,10 @@ fun RegisterContent(paddingValues: PaddingValues){
             )
             Spacer(modifier = Modifier.width(6.dp))
             TextFieldComponent(
-                label = "Correo Electronico",
+                label = "Correo",
                 placeHolder = "Ingrese su correo electronico",
-                value = "",
-                onValue = {}
+                value = email ,
+                onValue = {email = it}
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -152,13 +150,19 @@ fun RegisterContent(paddingValues: PaddingValues){
             TextFieldComponent(
                 label = "Contraseña",
                 placeHolder = "Ingrese su contraseña",
-                value = "",
-                onValue = {}
+                value = password,
+                onValue = { password = it }
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
         ButtonComponent(
-            navController = {},
+            navController = {
+                loginVM.register(
+                    email,
+                    password,
+                    name
+                ) { navController.navigate(GOAL_ROUTE) }
+            },
             label = "Continuar",
             enable = true
         )
@@ -175,13 +179,30 @@ fun RegisterContent(paddingValues: PaddingValues){
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    modifier = Modifier.clickable(onClick = { /*TODO*/ }),
+                    modifier = Modifier.clickable(onClick = {
+                        navController.navigate(LOGIN_ROUTE)
+                    }),
                     text = "login",
                     color = primaryColor,
                     textDecoration = TextDecoration.Underline,
                 )
+                if (loginVM.showAlert){
+                    Alert(
+                        title = "Alerta",
+                        message = "Usuario no creado",
+                        confirmText = "Aceptar",
+                        onConfirmClick = {
+                            loginVM.closeAlert()
+                            email = ""
+                            password = ""
+                        }
+                    ) {
+                        email = ""
+                        password = ""
+                    }
 
             }
         }
     }
+}
 }

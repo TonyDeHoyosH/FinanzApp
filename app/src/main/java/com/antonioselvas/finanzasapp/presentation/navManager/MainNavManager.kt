@@ -8,6 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.BottomNavigationBar
+import com.antonioselvas.finanzasapp.presentation.views.LOGIN_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.LoginView
+import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.RegisterView
 import com.antonioselvas.finanzasapp.presentation.views.SPLASH_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.SplashView
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
@@ -16,6 +20,8 @@ import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.NEW_EXPENSE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.NewExpenseView
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.NEW_SPLIT_ACCOUNT_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.NewSplitAccountContent
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.NewSplitAccountView
@@ -41,11 +47,8 @@ fun MainNavManager(){
             navController = navController,
             startDestination = HOME_ROUTE
         ){
-            composable(
-                HOME_ROUTE
-            ) {
-                HomeView(navController)
-            }
+
+            composable(HOME_ROUTE) { HomeView(navController) }
 
 
             composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController) }
