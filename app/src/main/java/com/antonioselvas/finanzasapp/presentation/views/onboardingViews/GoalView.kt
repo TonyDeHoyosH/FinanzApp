@@ -55,7 +55,7 @@ data class Goal(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalView(navController: NavHostController) {
+fun GoalView(navController: NavHostController, onGoalSelected: (String) -> Unit) {
     var selectedGoal by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
@@ -81,7 +81,9 @@ fun GoalView(navController: NavHostController) {
         },
         bottomBar = {
             NextButtonComponent(
-                { navController.navigate(BALANCE_ROUTE) },
+                {
+                    onGoalSelected(selectedGoal)
+                },
                 "Siguiente",
                 enable = selectedGoal.isNotEmpty()
             )

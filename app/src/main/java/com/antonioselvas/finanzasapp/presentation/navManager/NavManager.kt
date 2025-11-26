@@ -2,14 +2,23 @@ package com.antonioselvas.finanzasapp.presentation.navManager
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
-import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
-import com.antonioselvas.finanzasapp.presentation.views.homeViews.HomeView
+import com.antonioselvas.finanzasapp.presentation.views.LOGIN_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.LoginView
+import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.RegisterView
+import com.antonioselvas.finanzasapp.presentation.views.SPLASH_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.SplashView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.AddBalanceView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.BALANCE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
@@ -20,61 +29,101 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_F
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFixedView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
+import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.viewModels.OnboardingViewModel
 
 @Composable
-fun NavManager() {
-    val context = LocalContext.current
-    val dataStore = StoreOnBoarding(context)
-    val isOnboardingComplete = dataStore.getOnBoarding.collectAsState(false)
+fun NavManager(loginVM: AuthViewModel) {
+    val onboardingVM = remember { OnboardingViewModel() }
     val navController = rememberNavController()
 
-    val startRoute = if (true) {
-        "main_graph"
-    } else {
-        "onboarding_graph"
-    }
+
     NavHost(
         navController = navController,
-        startDestination = startRoute
+        startDestination = "splash_graph"
     ) {
         navigation(
             startDestination = WELCOME_ROUTE,
             route = "onboarding_graph"
         ) {
             composable(WELCOME_ROUTE) { WelcomeView(navController) }
-
-            composable(GOAL_ROUTE) { GoalView(navController) }
-
-            composable(BALANCE_ROUTE) { AddBalanceView(navController) }
-
-            composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(navController) }
-
+            composable(REGISTER_ROUTE) { RegisterView(navController, loginVM) }
+            composable(LOGIN_ROUTE) { LoginView(navController, loginVM) }
+            composable(GOAL_ROUTE) { GoalView(navController) { goal ->
+                onboardingVM.tempGoal = goal
+                navController.navigate(BALANCE_ROUTE)
+            }}
+            composable(BALANCE_ROUTE) { AddBalanceView(navController){ balance ->
+                onboardingVM.tempInitialBalance = balance
+                navController.navigate(SELECT_CATEGORY_ROUTE)
+            } }
+            composable(SELECT_CATEGORY_ROUTE) { SelectCategoriesView(navController){ categories ->
+                onboardingVM.tempCategories = categories.toList()
+                navController.navigate(SELECT_FIXED_ROUTE)
+            } }
             composable(SELECT_FIXED_ROUTE) {
-                SelectFixedView(
-                    navController = navController,
-                    onComplete = {
-                        navController.navigate("main_graph") {
-                            popUpTo("onboarding_graph") { inclusive = true }
+                var showError by remember { mutableStateOf(false) }
+                var errorMessage by remember { mutableStateOf("") }
+
+                if (showError) {
+                    Alert(
+                        title = "Error de guardado",
+                        message = errorMessage,
+                        confirmText = "Aceptar",
+                        onConfirmClick = {
+                            showError = false
+                            navController.navigate("onboarding_graph")
+                        },
+                        onDismissClick = {
+                            showError = false
+                            navController.navigate("onboarding_graph")
                         }
-                    })
+                    )
+                }
+
+                SelectFixedView(
+                    navController = navController
+                ) { fixedOption ->
+                    onboardingVM.tempFixedExpensesOption = fixedOption
+                    onboardingVM.saveOnboardingData(
+                        goal = onboardingVM.tempGoal,
+                        initialBalance = onboardingVM.tempInitialBalance.toDoubleOrNull() ?: 0.0,
+                        favoriteCategories = onboardingVM.tempCategories,
+                        fixedExpensesOption = onboardingVM.tempFixedExpensesOption,
+                        onSuccess = {
+                            loginVM.setOnboardingCompleted {
+                                navController.navigate("main_graph") {
+                                    popUpTo("onboarding_graph") { inclusive = true }
+                                }
+                            }
+                        },
+                        onError = { error ->
+                            errorMessage = error
+                            showError = true
+                        }
+                    )
+                }
             }
         }
 
         navigation(
             startDestination = MAIN_NAV_ROUTE,
             route = "main_graph"
-        ){
-            composable(
-                MAIN_NAV_ROUTE
-            ) {
-                MainNavManager()
-            }
+        ) {
+            composable(MAIN_NAV_ROUTE) { MainNavManager() }
         }
 
-
-
-
-
+        navigation(
+            startDestination = SPLASH_ROUTE,
+            route = "splash_graph"
+        ) {
+            composable(SPLASH_ROUTE) {
+                SplashView(
+                    navController = navController,
+                )
+            }
+        }
     }
-
 }
+
+

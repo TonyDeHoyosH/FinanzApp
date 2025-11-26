@@ -46,7 +46,7 @@ import secondaryText
 const val SELECT_CATEGORY_ROUTE = "SelectCategory"
 
 @Composable
-fun SelectCategoriesView(navController: NavHostController) {
+fun SelectCategoriesView(navController: NavHostController, onSelectCategories: (Set<String>) -> Unit) {
     var selectedCategories by remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
@@ -80,7 +80,9 @@ fun SelectCategoriesView(navController: NavHostController) {
         },
         bottomBar = {
             NextButtonComponent(
-                { navController.navigate(SELECT_FIXED_ROUTE) },
+                {
+                    onSelectCategories(selectedCategories)
+                },
                 "Siguiente",
                 enable = selectedCategories.isNotEmpty()
             )
@@ -125,13 +127,12 @@ fun SelectCategoriesContent(
                 category = category,
                 isSelected = selectedCategories.contains(category.name),
                 onSelect = {
-                    onCategoriesChange(
-                        if (selectedCategories.contains(category.name)) {
-                            selectedCategories - category.name
-                        } else {
-                            selectedCategories + category.name
-                        }
-                    )
+                    val newSet = if (selectedCategories.contains(category.name)) {
+                        selectedCategories - category.name
+                    } else {
+                        selectedCategories + category.name
+                    }
+                    onCategoriesChange(newSet)
                 }
             )
         }

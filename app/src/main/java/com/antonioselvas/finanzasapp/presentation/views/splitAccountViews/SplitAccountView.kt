@@ -71,7 +71,9 @@ fun SplitAccountView(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(bottom = 80.dp),
-                onClick = {},
+                onClick = {
+                    navController.navigate(NEW_SPLIT_ACCOUNT_ROUTE)
+                },
                 containerColor = Color.White,
                 shape = CircleShape
             ) {

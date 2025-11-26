@@ -74,11 +74,18 @@ fun CardSplitAccount(
     labelColor: Color = primaryText
 ) {
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == StartToEnd) onComplete(user)
-            else if (it == EndToStart) onDelete(user)
-            // Reset item when toggling done status
-            it != StartToEnd
+        confirmValueChange = { dismissValue ->
+            when (dismissValue) {
+                StartToEnd -> {
+                    onComplete(user)
+                    true
+                }
+                EndToStart -> {
+                    onDelete(user)
+                    true
+                }
+                else -> false
+            }
         },
         positionalThreshold = { totalDistance -> totalDistance * 0.75f }
     )

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
+import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import primaryText
 import secondaryText
@@ -48,7 +49,7 @@ fun WelcomeView(navController: NavController){
         },
         bottomBar = {
             NextButtonComponent(
-                { navController.navigate(GOAL_ROUTE) },
+                { navController.navigate(REGISTER_ROUTE) },
                 "Siguiente",
                 enable = true
             )
