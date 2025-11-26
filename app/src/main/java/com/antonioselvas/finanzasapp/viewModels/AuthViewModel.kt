@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 
 class AuthViewModel : ViewModel(){
-    private val auth: FirebaseAuth = Firebase.auth
+     val auth: FirebaseAuth = Firebase.auth
 
     var showAlert by mutableStateOf(false)
 
