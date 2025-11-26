@@ -57,7 +57,7 @@ const val SELECT_FIXED_ROUTE = "SelectFixed"
 
 
 @Composable
-fun SelectFixedView(navController: NavHostController, onComplete: () -> Unit) {
+fun SelectFixedView(navController: NavHostController, onOptionSelected: (String) -> Unit) {
     var selectedOption by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
@@ -87,7 +87,7 @@ fun SelectFixedView(navController: NavHostController, onComplete: () -> Unit) {
 
             NextButtonComponent(
                 {
-                    onComplete()
+                    onOptionSelected(selectedOption)
                 },
                 "Finalizar",
                 enable = selectedOption.isNotEmpty()

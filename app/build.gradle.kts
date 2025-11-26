@@ -85,6 +85,10 @@ dependencies {
 //    FireStore
     implementation(libs.firebase.firestore)
 
+//    PasswordInput
+    implementation(libs.androidx.compose.bom.v20251101)
+    implementation(libs.material3)
+    implementation (libs.androidx.material.icons.extended)
 
 
 }

@@ -44,7 +44,7 @@ import secondaryText
 const val BALANCE_ROUTE = "Balance"
 
 @Composable
-fun AddBalanceView(navController: NavHostController) {
+fun AddBalanceView(navController: NavHostController, onBalanceChange: (String) -> Unit) {
     var balance by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
@@ -97,7 +97,9 @@ fun AddBalanceView(navController: NavHostController) {
         },
         bottomBar = {
             NextButtonComponent(
-                { navController.navigate(SELECT_CATEGORY_ROUTE) },
+                {
+                    onBalanceChange(balance)
+                },
                 "Siguiente",
                 enable = balance.isNotEmpty()
             )

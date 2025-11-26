@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
@@ -30,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -40,6 +43,7 @@ import androidx.wear.compose.material.dialog.Alert
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
+import com.antonioselvas.finanzasapp.components.PasswordTextFieldComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
 import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
@@ -55,6 +59,7 @@ const val REGISTER_ROUTE = "register"
 @Composable
 fun RegisterView(navController: NavHostController, loginVM: AuthViewModel) {
     Scaffold(
+        containerColor = Color.White
     ) {
         RegisterContent(it, navController, loginVM)
     }
@@ -74,16 +79,16 @@ fun RegisterContent(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
-            .padding(horizontal = 18.dp),
+            .padding(horizontal = 18.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.register),
             contentDescription = "Login Image",
-            modifier = Modifier.size(245.dp)
+            modifier = Modifier.size(260.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text ="Registrate",
             style = MaterialTheme.typography.headlineMedium,
@@ -91,7 +96,7 @@ fun RegisterContent(
             fontSize = 32.sp,
             color = primaryText
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -147,14 +152,14 @@ fun RegisterContent(
                 tint = secondaryText
             )
             Spacer(modifier = Modifier.width(6.dp))
-            TextFieldComponent(
+            PasswordTextFieldComponent(
                 label = "Contraseña",
                 placeHolder = "Ingrese su contraseña",
                 value = password,
                 onValue = { password = it }
             )
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(22.dp))
         ButtonComponent(
             navController = {
                 loginVM.register(
@@ -166,13 +171,11 @@ fun RegisterContent(
             label = "Continuar",
             enable = true
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(),
 
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
             ) {
-            Row {
                 Text(
                     "¿Ya estas registrado?",
                     color = secondaryText
@@ -186,6 +189,7 @@ fun RegisterContent(
                     color = primaryColor,
                     textDecoration = TextDecoration.Underline,
                 )
+            }
                 if (loginVM.showAlert){
                     Alert(
                         title = "Alerta",
@@ -202,7 +206,5 @@ fun RegisterContent(
                     }
 
             }
-        }
     }
-}
 }

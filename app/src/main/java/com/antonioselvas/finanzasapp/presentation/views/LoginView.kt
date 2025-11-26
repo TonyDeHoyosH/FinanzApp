@@ -3,7 +3,9 @@ package com.antonioselvas.finanzasapp.presentation.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
@@ -12,16 +14,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
+import com.antonioselvas.finanzasapp.components.PasswordTextFieldComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
@@ -31,11 +36,11 @@ import secondaryText
 
 
 const val LOGIN_ROUTE = "login"
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginView(navController: NavHostController, loginVM: AuthViewModel) {
     Scaffold(
+        containerColor = Color.White
     ) {
         LoginContent(it, navController, loginVM)
     }
@@ -59,14 +64,13 @@ fun LoginContent(
             .padding(horizontal = 18.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.login),
             contentDescription = "Login Image",
-            modifier = Modifier
+            modifier = Modifier.size(260.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text ="Login",
             style = MaterialTheme.typography.headlineMedium,
@@ -83,7 +87,7 @@ fun LoginContent(
             color = secondaryText,
             fontWeight = FontWeight.Normal
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -118,14 +122,14 @@ fun LoginContent(
                 tint = secondaryText
             )
             Spacer(modifier = Modifier.width(6.dp))
-            TextFieldComponent(
+            PasswordTextFieldComponent(
                 label = "Contraseña",
                 placeHolder = "Ingrese su contraseña",
                 value = password,
-                onValue = { password = it}
+                onValue = { password = it }
             )
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(22.dp))
         ButtonComponent(
             navController = {
                 if (!isLoading) {
@@ -141,13 +145,12 @@ fun LoginContent(
             label = if (isLoading) "Cargando..." else "Continuar",
             enable = email.isNotBlank() && password.isNotBlank() && !isLoading
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(),
 
-        ) {
-            Row {
+
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
+            ) {
             Text(
                 "¿Aun no tienes cuenta?",
                 color = secondaryText
@@ -161,7 +164,6 @@ fun LoginContent(
             )
 
             }
-        }
         if (loginVM.showAlert) {
             Alert(
                 title = "Alerta",

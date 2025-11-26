@@ -33,7 +33,7 @@ fun NextButtonComponent(
             modifier = Modifier
                 .width(352.dp)
                 .height(44.dp)
-                .padding(horizontal = 18.dp),
+                .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = primaryColor,
