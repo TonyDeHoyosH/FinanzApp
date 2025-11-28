@@ -1,7 +1,9 @@
 package com.antonioselvas.finanzasapp.presentation.views.homeViews
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,8 @@ import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.LocalTaxi
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Restaurant
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,24 +45,25 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import bgBlue
 import com.antonioselvas.finanzasapp.R
+import com.antonioselvas.finanzasapp.components.AddBalanceModal
 import com.antonioselvas.finanzasapp.components.SelectCardComponent
-import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import gradientBlue
 import primaryColor
 import primaryText
+import androidx.compose.runtime.collectAsState
 
 
 const val HOME_ROUTE = "Home"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(navController: NavHostController) {
+fun HomeView(navController: NavHostController, homeVM: HomeViewModel) {
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier
@@ -123,13 +132,40 @@ fun HomeView(navController: NavHostController) {
             )
         }
     ) {
-        HomeContent(it, navController)
+        HomeContent(it, navController, homeVM)
     }
 }
 
 
+@SuppressLint("DefaultLocale")
 @Composable
-fun HomeContent(paddingValues: PaddingValues, navController: NavHostController){
+fun HomeContent(
+    paddingValues: PaddingValues,
+    navController: NavHostController,
+    homeVM: HomeViewModel
+){
+    var showAddBalance by remember { mutableStateOf(false) }
+    if (homeVM.uiState.collectAsState().value.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    if (homeVM.uiState.collectAsState().value.error != null) {
+        // Tu componente de error
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Error: ${homeVM.uiState.collectAsState().value.error}")
+            Button(onClick = { homeVM.loadBalance() }) {
+                Text("Reintentar")
+            }
+        }
+        return
+    }
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -146,7 +182,7 @@ fun HomeContent(paddingValues: PaddingValues, navController: NavHostController){
         ){
             Row(
                 modifier = Modifier
-                    .width(234.dp),
+                    .width(244.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -160,8 +196,8 @@ fun HomeContent(paddingValues: PaddingValues, navController: NavHostController){
                         color = primaryText
                     )
                     Text(
-                        text = "$50.00",
-                        fontSize = 46.sp,
+                        text = String.format("$%.2f", homeVM.uiState.collectAsState().value.currentBalance),
+                        fontSize = 40.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
                     )
@@ -174,7 +210,9 @@ fun HomeContent(paddingValues: PaddingValues, navController: NavHostController){
                             shape = CircleShape,
                             clip = false
                         ),
-                    onClick = {},
+                    onClick = {
+                        showAddBalance = true
+                    },
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = Color.White
                     )
@@ -185,6 +223,11 @@ fun HomeContent(paddingValues: PaddingValues, navController: NavHostController){
                     )
                 }
 
+            }
+            if (showAddBalance){
+                AddBalanceModal(
+                    onDismissRequest = { showAddBalance = false},
+                )
             }
             Spacer(modifier = Modifier.padding(vertical = 20.dp))
             SelectCardComponent(

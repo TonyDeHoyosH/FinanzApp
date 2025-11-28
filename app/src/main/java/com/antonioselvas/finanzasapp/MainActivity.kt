@@ -7,8 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.antonioselvas.finanzasapp.presentation.navManager.NavManager
 import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
-import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

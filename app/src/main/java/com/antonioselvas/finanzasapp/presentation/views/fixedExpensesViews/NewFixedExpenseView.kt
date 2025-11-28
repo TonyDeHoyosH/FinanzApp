@@ -1,25 +1,19 @@
-package com.antonioselvas.finanzasapp.presentation.views.splitAccountViews
+package com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.antonioselvas.finanzasapp.components.ButtonComponent
-import com.antonioselvas.finanzasapp.components.CardSplitAccount
-import com.antonioselvas.finanzasapp.components.CardSplitAccountAddUser
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
@@ -57,18 +49,19 @@ import primaryText
 import secondaryText
 
 
-const val NEW_SPLIT_ACCOUNT_ROUTE = "NewSplitAccount"
+const val NEW_FIXED_EXPENSE_ROUTE = "NewFixedExpense"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun NewSplitAccountView() {
+fun NewFixedExpenseView() {
     var expense by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var divisionForm by remember { mutableStateOf("") }
+    var selectedDateFinal by remember { mutableStateOf("") }
     val users: MutableList<SplitAccountUser> = remember {
         mutableStateListOf(
             SplitAccountUser(
@@ -99,7 +92,7 @@ fun NewSplitAccountView() {
                 ),
                 title = {
                     Text(
-                        text = "Nuevo Gasto Compartido",
+                        text = "Nuevo Gasto Fijo",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
@@ -118,7 +111,7 @@ fun NewSplitAccountView() {
             )
         }
     ) {
-        NewSplitAccountContent(
+        NewFixedExpenseContent(
             it,
             expense = expense,
             onExpenseChange = { e -> expense = e },
@@ -128,18 +121,19 @@ fun NewSplitAccountView() {
             onType = { t -> type = t },
             selectedDate = selectedDate,
             onSelectedDate = { d -> selectedDate = d },
+            onSelectedDateFinal = { f -> selectedDateFinal = f },
             division = divisionForm,
             onDivisionForm = { v -> divisionForm = v },
             users = users,
             description = description,
-            onDescription = { p -> description = p},
+            onDescription = { p -> description = p },
             addUser = { u -> users.add(u) }
         )
     }
 }
 
 @Composable
-fun NewSplitAccountContent(
+fun NewFixedExpenseContent(
     paddingValues: PaddingValues,
     expense: String,
     onExpenseChange: (String) -> Unit,
@@ -149,6 +143,7 @@ fun NewSplitAccountContent(
     onType: (String) -> Unit,
     selectedDate: String,
     onSelectedDate: (String) -> Unit,
+    onSelectedDateFinal: (String) -> Unit,
     division: String,
     onDivisionForm: (String) -> Unit,
     users: MutableList<SplitAccountUser>,
@@ -279,83 +274,25 @@ fun NewSplitAccountContent(
             )
 
 
-            DatePickerFieldToModal(
-                modifier = Modifier,
-                onSelectedDate = { d -> onSelectedDate(d) }
-            )
+
+
+                DatePickerFieldToModal(
+                    label = "Inicio",
+                    modifier = Modifier,
+                    onSelectedDate = { d -> onSelectedDate(d) }
+                )
+                DatePickerFieldToModal(
+                    label = "Finalizacion",
+                    modifier = Modifier,
+                    onSelectedDate = { d -> onSelectedDateFinal(d) }
+                )
         }
-
-
-
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Top
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 8.dp)
-                    .clickable(
-                        onClick = {
-                            showAddFriend = true
-                        }
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text("Agregar amigo")
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "AddUser"
-                )
-
-            }
-
-            if (showAddFriend) {
-                CardSplitAccountAddUser(
-                    createdUser = { user -> addUser(user) },
-                    onDismissRequest = { showAddFriend = false },
-                    users = users
-                )
-            }
-
-            LazyColumn(
-                modifier = Modifier.height(160.dp)
-                    .padding(vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-
-            ) {
-                items(
-                    users,
-                    key = { it.id }) { user ->
-                    CardSplitAccount(
-                        user = user,
-                        onEdit = {},
-                        onComplete = { onComplete ->
-                            users -= onComplete
-                            user.paid = !onComplete.paid
-                        },
-                        onDelete = { onDelete ->
-                            users -= onDelete
-                            user.deleted = !onDelete.deleted
-                        },
-                        modifier = Modifier.animateItem()
-                    )
-                    Spacer(modifier = Modifier.padding(vertical = 4.dp))
-                }
-            }
-
-
-
-
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom
             ) {
+                Spacer(modifier = Modifier.padding(top = 32.dp))
+
                 ButtonComponent(
                     navController = {
 
@@ -372,6 +309,5 @@ fun NewSplitAccountContent(
 
     }
 
-}
 
 

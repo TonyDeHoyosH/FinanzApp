@@ -34,6 +34,7 @@ import java.util.Locale
 
 @Composable
 fun DatePickerFieldToModal(
+    label: String? = null ,
     modifier: Modifier = Modifier,
     onSelectedDate: (String) -> Unit,
                            ) {
@@ -44,7 +45,7 @@ fun DatePickerFieldToModal(
         onValueChange = { },
         label = {
             Text(
-                "Fecha",
+                text = label ?: "Fecha",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Normal,
                 color = secondaryText

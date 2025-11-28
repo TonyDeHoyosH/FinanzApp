@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -20,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,13 +54,18 @@ const val NEW_EXPENSE_ROUTE = "NewExpense"
 @Composable
 fun NewExpenseView(navController: NavHostController) {
     var expense by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
 
     Scaffold(
+        containerColor = Color.White,
         topBar = {
             CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
                 title = {
                     Text(
                         text = "Nuevo Gasto",
@@ -88,6 +97,8 @@ fun NewExpenseView(navController: NavHostController) {
             onType = { t -> type = t },
             selectedDate = selectedDate,
             onSelectedDate = { d -> selectedDate = d },
+            description = description,
+            onDescription = { p -> description = p },
             navController
         )
     }
@@ -105,8 +116,9 @@ fun NewExpenseContent(
     onType: (String) -> Unit,
     selectedDate: String,
     onSelectedDate: (String) -> Unit,
+    description: String,
+    onDescription: (String) -> Unit,
     navController: NavHostController,
-//    navController: NavHostController
 ) {
     val categories: MutableList<String> = remember {
         mutableListOf(
@@ -138,9 +150,10 @@ fun NewExpenseContent(
             .padding(paddingValues)
             .fillMaxSize()
             .padding(horizontal = 8.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
-            modifier = Modifier.height(170.dp),
+            modifier = Modifier.height(150.dp),
             verticalArrangement = Arrangement.Center
         ) {
             BasicTextField(
@@ -196,8 +209,10 @@ fun NewExpenseContent(
             TextFieldComponent(
                 label = "Descripcion",
                 placeHolder = "Ej: Café con amigos",
-                value = "",
-                onValue = {}
+                value = description,
+                onValue = { p ->
+                    onDescription(p)
+                }
             )
             DropDownComponent(
                 label = "Categoria",

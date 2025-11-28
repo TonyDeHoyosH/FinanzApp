@@ -1,4 +1,4 @@
-package com.antonioselvas.finanzasapp.models
+package com.antonioselvas.finanzasapp.domain.models
 
 data class User(
     val userId: String,

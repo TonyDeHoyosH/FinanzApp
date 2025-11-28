@@ -9,13 +9,11 @@ import androidx.compose.material.icons.outlined.Discount
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -24,8 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.antonioselvas.finanzasapp.models.BottomNavItem
+import com.antonioselvas.finanzasapp.domain.models.BottomNavItem
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_ROUTE
