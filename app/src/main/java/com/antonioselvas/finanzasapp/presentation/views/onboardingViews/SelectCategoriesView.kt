@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,7 +35,7 @@ import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
 import com.antonioselvas.finanzasapp.components.onboarding.SelectCategoryComponent
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
-import com.antonioselvas.finanzasapp.models.Category
+import com.antonioselvas.finanzasapp.domain.models.Category
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import primaryText
 import secondaryText

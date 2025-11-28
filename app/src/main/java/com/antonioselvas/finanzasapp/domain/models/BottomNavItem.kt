@@ -1,4 +1,4 @@
-package com.antonioselvas.finanzasapp.models
+package com.antonioselvas.finanzasapp.domain.models
 
 import android.graphics.drawable.Icon
 import androidx.compose.ui.graphics.vector.ImageVector

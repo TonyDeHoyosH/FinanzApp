@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -28,8 +26,7 @@ import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.PasswordTextFieldComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
-import com.antonioselvas.finanzasapp.presentation.views.homeViews.HOME_ROUTE
-import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
 import primaryColor
 import primaryText
 import secondaryText

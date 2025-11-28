@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.ProfilePictureComponent
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
-import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
 import primaryColor
 import red
 

@@ -4,6 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 //    Firebase
     id("com.google.gms.google-services")
+//    Hilt
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id ("kotlin-kapt")
+    id ("dagger.hilt.android.plugin")
 }
 
 android {
@@ -90,5 +95,9 @@ dependencies {
     implementation(libs.material3)
     implementation (libs.androidx.material.icons.extended)
 
+//    Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
 }

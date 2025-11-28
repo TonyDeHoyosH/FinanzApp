@@ -1,8 +1,8 @@
-package com.antonioselvas.finanzasapp.viewModels
+package com.antonioselvas.finanzasapp.presentation.viewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.antonioselvas.finanzasapp.models.OnboardingData
+import com.antonioselvas.finanzasapp.domain.models.OnboardingData
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore

@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -26,8 +27,9 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_F
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFixedView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
-import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
-import com.antonioselvas.finanzasapp.viewModels.OnboardingViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.OnboardingViewModel
 
 @Composable
 fun NavManager(loginVM: AuthViewModel) {
@@ -107,7 +109,10 @@ fun NavManager(loginVM: AuthViewModel) {
             startDestination = MAIN_NAV_ROUTE,
             route = "main_graph"
         ) {
-            composable(MAIN_NAV_ROUTE) { MainNavManager(loginVM, rootNavController) }
+
+            composable(MAIN_NAV_ROUTE) {
+                val homeVM = hiltViewModel<HomeViewModel>()
+                MainNavManager(loginVM, rootNavController, homeVM) }
         }
 
         navigation(

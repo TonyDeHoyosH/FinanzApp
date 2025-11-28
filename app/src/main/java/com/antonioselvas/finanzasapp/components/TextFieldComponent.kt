@@ -49,7 +49,11 @@ fun TextFieldComponent(
                 color = secondaryText )
         },
         placeholder = {
-            placeHolder
+            Text(
+                placeHolder,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            )
         },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,

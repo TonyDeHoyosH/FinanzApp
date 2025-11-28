@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,34 +29,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antonioselvas.finanzasapp.domain.models.SplitAccountUser
-import primaryColor
 import primaryText
 import secondaryText
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardSplitAccountAddUser(
+fun AddBalanceModal(
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    amountColor: Color = Color.Red,
-    labelColor: Color = primaryText,
-    createdUser: (SplitAccountUser) -> Unit,
-    users: MutableList<SplitAccountUser>,
-) {
-
+    ){
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
     ) {
-
-
-        var name by remember { mutableStateOf("") }
-        var amount by remember { mutableStateOf("") }
+        var balance by remember { mutableStateOf("") }
         Column(
             modifier = Modifier
                 .shadow(
@@ -69,13 +58,13 @@ fun CardSplitAccountAddUser(
                     shape = RoundedCornerShape(24.dp)
                 )
                 .background(color = Color.White, shape = RoundedCornerShape(24.dp))
-                .height(280.dp)
-                .padding(horizontal = 28.dp),
+                .padding(horizontal = 28.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(vertical = 12.dp))
             Text(
-                "Agregando un amigo",
+                "Agregando balance",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = primaryText
@@ -97,13 +86,13 @@ fun CardSplitAccountAddUser(
                         ),
                     label = {
                         Text(
-                            text ="Nombre:",
+                            text ="Balance:",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Normal,
                             color = secondaryText )
                     },
-                    value = name,
-                    onValueChange = { name = it },
+                    value = balance,
+                    onValueChange = { balance = it },
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Normal,
@@ -120,38 +109,6 @@ fun CardSplitAccountAddUser(
 
                     )
 
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 1.dp,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(20.dp)
-                        ),
-                    label = {
-                        Text(
-                            text ="Monto:",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = secondaryText )
-                    },
-                    value = amount,
-                    onValueChange = { amount = it },
-                    textStyle = LocalTextStyle.current.copy(
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.SemiBold,
-                        color = primaryColor
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
 
                 Button(
                     modifier = Modifier
@@ -159,15 +116,7 @@ fun CardSplitAccountAddUser(
                         .height(44.dp),
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                        val newUser = SplitAccountUser(
-                            id = (users.size + 1).toString(),
-                            name = name,
-                            amount = amount.toFloat(),
-                            paidAmount = 0f,
-                            paid = false,
-                            deleted = false
-                        )
-                        createdUser(newUser)
+
                         onDismissRequest()
                     }
                 ) {
@@ -179,27 +128,10 @@ fun CardSplitAccountAddUser(
                 }
             }
 
+            Spacer(modifier = Modifier.padding(vertical = 12.dp))
+
         }
 
     }
 }
 
-
-//    @Preview(showBackground = true)
-//    @Composable
-//    fun PreviewCardSplit() {
-//        Scaffold {
-//            FinancesAppTheme {
-//                Box(
-//                    modifier = Modifier
-//                        .padding(it)
-//                        .fillMaxSize()
-//                ) {
-//
-//
-//                }
-//
-//            }
-//        }
-//    }
-//}

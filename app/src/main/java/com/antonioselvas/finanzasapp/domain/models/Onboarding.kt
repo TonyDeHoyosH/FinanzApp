@@ -1,4 +1,4 @@
-package com.antonioselvas.finanzasapp.models
+package com.antonioselvas.finanzasapp.domain.models
 
 data class OnboardingData(
     val goal: String = "",

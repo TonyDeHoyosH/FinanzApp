@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,14 +38,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.wear.compose.material.dialog.Alert
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.PasswordTextFieldComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
-import com.antonioselvas.finanzasapp.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
 import primaryColor
 import primaryText
 import secondaryText

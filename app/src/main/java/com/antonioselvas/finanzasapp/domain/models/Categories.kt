@@ -1,4 +1,4 @@
-package com.antonioselvas.finanzasapp.models
+package com.antonioselvas.finanzasapp.domain.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
