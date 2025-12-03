@@ -2,14 +2,13 @@ package com.antonioselvas.finanzasapp.domain.models
 
 data class Expense(
     val id: String = "",
-    val amount: Double,
-    val description: String,
-    val category: String,
-    val type: ExpenseType,
-    val date: Long,
+    val amount: Double = 0.0,
+    val description: String = "",
+    val category: String = "",
+    val type: String = "",
+    val date: String = "",
 )
 
-enum class ExpenseType { NORMAL, FIXED }
 
 data class FixedExpense(
     val id: String = "",
