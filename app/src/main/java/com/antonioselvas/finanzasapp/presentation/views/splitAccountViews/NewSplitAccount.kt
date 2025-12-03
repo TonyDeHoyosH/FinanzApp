@@ -67,7 +67,7 @@ fun NewSplitAccountView() {
     var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
     var divisionForm by remember { mutableStateOf("") }
     val users: MutableList<SplitAccountUser> = remember {
         mutableStateListOf(
@@ -126,7 +126,6 @@ fun NewSplitAccountView() {
             onCategory = { c -> category = c },
             type = type,
             onType = { t -> type = t },
-            selectedDate = selectedDate,
             onSelectedDate = { d -> selectedDate = d },
             division = divisionForm,
             onDivisionForm = { v -> divisionForm = v },
@@ -147,8 +146,7 @@ fun NewSplitAccountContent(
     onCategory: (String) -> Unit,
     type: String,
     onType: (String) -> Unit,
-    selectedDate: String,
-    onSelectedDate: (String) -> Unit,
+    onSelectedDate: (Long) -> Unit,
     division: String,
     onDivisionForm: (String) -> Unit,
     users: MutableList<SplitAccountUser>,
@@ -281,7 +279,11 @@ fun NewSplitAccountContent(
 
             DatePickerFieldToModal(
                 modifier = Modifier,
-                onSelectedDate = { d -> onSelectedDate(d) }
+                onSelectedDate = { d ->
+                    if (d != null) {
+                        onSelectedDate(d)
+                    }
+                }
             )
         }
 

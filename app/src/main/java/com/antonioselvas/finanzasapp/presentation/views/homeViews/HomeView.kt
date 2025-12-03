@@ -15,14 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.CreditCard
-import androidx.compose.material.icons.outlined.LocalTaxi
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,11 +52,11 @@ import bgBlue
 import com.antonioselvas.finanzasapp.R
 import com.antonioselvas.finanzasapp.components.AddBalanceModal
 import com.antonioselvas.finanzasapp.components.SelectCardComponent
+import com.antonioselvas.finanzasapp.domain.models.CategoryMap
 import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import gradientBlue
 import primaryColor
 import primaryText
-import androidx.compose.runtime.collectAsState
 
 
 const val HOME_ROUTE = "Home"
@@ -83,7 +83,7 @@ fun HomeView(navController: NavHostController, homeVM: HomeViewModel) {
                 modifier = Modifier,
                 title = {
                     Text(
-                        text = "Hola, Antonio",
+                        text = "Hola, ${homeVM.userInfo.collectAsState().value.name}",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
@@ -144,6 +144,7 @@ fun HomeContent(
     navController: NavHostController,
     homeVM: HomeViewModel
 ){
+    val userInfo by homeVM.userInfo.collectAsState()
     var showAddBalance by remember { mutableStateOf(false) }
     if (homeVM.uiState.collectAsState().value.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -153,14 +154,14 @@ fun HomeContent(
     }
 
     if (homeVM.uiState.collectAsState().value.error != null) {
-        // Tu componente de error
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text("Error: ${homeVM.uiState.collectAsState().value.error}")
-            Button(onClick = { homeVM.loadBalance() }) {
+            Button(onClick = { homeVM.loadHomeData() }) {
                 Text("Reintentar")
             }
         }
@@ -227,6 +228,7 @@ fun HomeContent(
             if (showAddBalance){
                 AddBalanceModal(
                     onDismissRequest = { showAddBalance = false},
+                    homeVM
                 )
             }
             Spacer(modifier = Modifier.padding(vertical = 20.dp))
@@ -242,7 +244,8 @@ fun HomeContent(
             )
         }
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
             Text(
@@ -256,50 +259,21 @@ fun HomeContent(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Gasto 1: MotoTaxi
-                item {
+                items(userInfo.lastExpens){ it ->
+                    val categoryAppearance = CategoryMap[it.category] ?: CategoryMap["Otros"]!!
+                    if (it.typeTransaction == "Expense"){
                     SelectCardComponent(
-                        label = "MotoTaxi",
-                        imageVector = Icons.Outlined.LocalTaxi,
-                        iconColor = Color(0xFF2C2C2C),
-                        bgColor = Color(0xFFF5F5F5),
+                        label = it.description,
+                        imageVector = categoryAppearance.icon,
                         selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        onClick = {},
-                        date = "15 jul",
-                        amount = "-$10.00",
+                        onClick = {  },
+                        date = it.date.toString(),
+                        amount = it.amount.toString(),
+                        iconColor = categoryAppearance.iconColor,
+                        bgColor = categoryAppearance.backgroundColor,
                         amountColor = Color(0xFFE53935),
-                        labelColor = Color(0xFF2C2C2C)
                     )
-                }
-
-                // Gasto 2: Comida - Restaurante
-                item {
-                    SelectCardComponent(
-                        label = "Restaurante",
-                        imageVector = Icons.Outlined.Restaurant,
-                        iconColor = Color(0xFFFF6F00),
-                        bgColor = Color(0xFFFFE0B2),
-                        selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        onClick = {},
-                        date = "14 jul",
-                        amount = "-$25.50",
-                        amountColor = Color(0xFFE53935),
-                        labelColor = Color(0xFF2C2C2C)
-                    )
-                }
-                item {
-                    SelectCardComponent(
-                        label = "Restaurante",
-                        imageVector = Icons.Outlined.Restaurant,
-                        iconColor = Color(0xFFFF6F00),
-                        bgColor = Color(0xFFFFE0B2),
-                        selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        onClick = {},
-                        date = "14 jul",
-                        amount = "-$25.50",
-                        amountColor = Color(0xFFE53935),
-                        labelColor = Color(0xFF2C2C2C)
-                    )
+                    }
                 }
             }
         }

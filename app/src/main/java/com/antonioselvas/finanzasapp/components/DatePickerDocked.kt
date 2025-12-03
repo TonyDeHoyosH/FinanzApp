@@ -34,10 +34,10 @@ import java.util.Locale
 
 @Composable
 fun DatePickerFieldToModal(
-    label: String? = null ,
+    label: String? = null,
     modifier: Modifier = Modifier,
-    onSelectedDate: (String) -> Unit,
-                           ) {
+    onSelectedDate: (Long?) -> Unit,
+) {
     var showModal by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf<Long?>(null) }
     TextField(
@@ -79,9 +79,7 @@ fun DatePickerFieldToModal(
         DatePickerModal(
             onDateSelected = { millis ->
                 selectedDate = millis
-                millis?.let {
-                    onSelectedDate(convertMillisToDate(it))
-                }
+                    onSelectedDate(millis)
             },
             onDismiss = { showModal = false }
         )

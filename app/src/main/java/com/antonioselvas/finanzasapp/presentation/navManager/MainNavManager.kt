@@ -53,9 +53,9 @@ fun MainNavManager(
 
             composable(HOME_ROUTE) { HomeView(navController, homeVM) }
 
-            composable(USER_ACCOUNT_ROUTE) { UserAccountView(rootNavController, loginVM, navController) }
+            composable(USER_ACCOUNT_ROUTE) { UserAccountView(rootNavController, loginVM, navController, homeVM) }
 
-            composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController) }
+            composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController, homeVM) }
 
             composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView(navController) }
 

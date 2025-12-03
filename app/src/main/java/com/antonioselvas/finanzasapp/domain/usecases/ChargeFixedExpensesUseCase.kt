@@ -1,10 +1,5 @@
 package com.antonioselvas.finanzasapp.domain.usecases
 
-import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
-import com.antonioselvas.finanzasapp.domain.models.Expense
-import com.antonioselvas.finanzasapp.domain.models.ExpenseType
-import com.antonioselvas.finanzasapp.domain.models.FixedExpense
-import com.antonioselvas.finanzasapp.domain.models.Frequency
 //
 //class ChargeFixedExpensesUseCase(private val repository: FinanceRepository) {
 //    suspend operator fun invoke(uid: String): Result<Int> {
