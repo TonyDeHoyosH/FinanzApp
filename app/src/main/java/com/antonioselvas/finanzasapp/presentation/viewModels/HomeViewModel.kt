@@ -1,15 +1,12 @@
 package com.antonioselvas.finanzasapp.presentation.viewModels
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
 import com.antonioselvas.finanzasapp.domain.models.CompleteUserInfo
-import com.antonioselvas.finanzasapp.domain.models.Expense
 import com.antonioselvas.finanzasapp.domain.usecases.AddExpenseUseCase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -64,7 +60,7 @@ class HomeViewModel @Inject constructor(
                         idUser = uid,
                         name = name,
                         email = FirebaseAuth.getInstance().currentUser?.email ?: "",
-                        lastExpenses = lastExpenses
+                        lastExpens = lastExpenses
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(isLoading = false, error = "Usuario no identificado")
@@ -78,7 +74,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    fun addExpense(amount: Double, description: String, category: String, type: String, date: String, isShared: Boolean) {
+    fun addTransaction(amount: Double, description: String, category: String, type: String, date: Long, typeTransaction: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -86,6 +82,7 @@ class HomeViewModel @Inject constructor(
                 uid = financeRepository.getCurrentUserId(),
                 amount = amount,
                 description = description,
+                typeTransaction = typeTransaction,
                 category = category,
                 type = type,
                 date = date

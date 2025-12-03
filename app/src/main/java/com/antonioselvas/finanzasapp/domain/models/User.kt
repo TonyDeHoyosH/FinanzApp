@@ -12,5 +12,5 @@ data class CompleteUserInfo(
     val idUser: String = "",
     val name: String = "",
     val email: String ="",
-    val lastExpenses: List<Expense> = emptyList()
+    val lastExpens: List<Transaction> = emptyList()
 )

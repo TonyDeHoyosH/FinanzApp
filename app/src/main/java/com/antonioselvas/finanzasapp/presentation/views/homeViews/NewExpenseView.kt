@@ -104,7 +104,7 @@ fun NewExpenseContent(
     var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
     var categories: MutableList<String> = remember {
         mutableListOf(
             "Alimentación",
@@ -146,7 +146,7 @@ fun NewExpenseContent(
                 onValueChange = { newValue ->
 
                     if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                       expense = newValue
+                        expense = newValue
                     }
                 },
                 textStyle = LocalTextStyle.current.copy(
@@ -213,7 +213,7 @@ fun NewExpenseContent(
             )
             DatePickerFieldToModal(
                 modifier = Modifier,
-                onSelectedDate = { d -> selectedDate = d }
+                onSelectedDate = { millis -> selectedDate = millis }
             )
 
 
@@ -225,13 +225,13 @@ fun NewExpenseContent(
         ) {
             ButtonComponent(
                 navController = {
-                    homeViewModel.addExpense(
+                    homeViewModel.addTransaction(
                         amount = expense.toDouble(),
                         description = description,
                         category = category,
+                        typeTransaction = "Expense",
                         type = type,
-                        date = selectedDate,
-                        isShared = false
+                        date = selectedDate!!
                     )
                     navController.navigate(HOME_ROUTE)
                 },

@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import primaryText
 import secondaryText
 
@@ -40,11 +41,13 @@ import secondaryText
 @Composable
 fun AddBalanceModal(
     onDismissRequest: () -> Unit,
+    homVM: HomeViewModel
     ){
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
     ) {
         var balance by remember { mutableStateOf("") }
+        var description by remember { mutableStateOf("") }
         Column(
             modifier = Modifier
                 .shadow(
@@ -86,13 +89,45 @@ fun AddBalanceModal(
                         ),
                     label = {
                         Text(
-                            text ="Balance:",
+                            text ="Monto:",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Normal,
                             color = secondaryText )
                     },
                     value = balance,
                     onValueChange = { balance = it },
+                    textStyle = LocalTextStyle.current.copy(
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+
+                    )
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(20.dp)
+                        ),
+                    label = {
+                        Text(
+                            text ="Descripcion:",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = secondaryText )
+                    },
+                    value = description,
+                    onValueChange = { description = it },
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Normal,
@@ -116,6 +151,15 @@ fun AddBalanceModal(
                         .height(44.dp),
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
+                        val currentTimestamp: Long = System.currentTimeMillis()
+                        homVM.addTransaction(
+                            amount = balance.toDouble(),
+                            description = description,
+                            date = currentTimestamp,
+                            typeTransaction = "Income",
+                            category = "",
+                            type = ""
+                        )
 
                         onDismissRequest()
                     }
