@@ -59,7 +59,7 @@ fun NewFixedExpenseView() {
     var description by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
     var divisionForm by remember { mutableStateOf("") }
     var selectedDateFinal by remember { mutableStateOf("") }
     val users: MutableList<SplitAccountUser> = remember {
@@ -119,7 +119,7 @@ fun NewFixedExpenseView() {
             onCategory = { c -> category = c },
             type = type,
             onType = { t -> type = t },
-            selectedDate = selectedDate,
+            selectedDate = selectedDate!!,
             onSelectedDate = { d -> selectedDate = d },
             onSelectedDateFinal = { f -> selectedDateFinal = f },
             division = divisionForm,
@@ -141,8 +141,8 @@ fun NewFixedExpenseContent(
     onCategory: (String) -> Unit,
     type: String,
     onType: (String) -> Unit,
-    selectedDate: String,
-    onSelectedDate: (String) -> Unit,
+    selectedDate: Long,
+    onSelectedDate: (Long) -> Unit,
     onSelectedDateFinal: (String) -> Unit,
     division: String,
     onDivisionForm: (String) -> Unit,
@@ -279,12 +279,19 @@ fun NewFixedExpenseContent(
                 DatePickerFieldToModal(
                     label = "Inicio",
                     modifier = Modifier,
-                    onSelectedDate = { d -> onSelectedDate(d) }
+                    onSelectedDate = { d ->
+                        if (d != null) {
+                            onSelectedDate(d)
+                        }
+                    }
                 )
                 DatePickerFieldToModal(
                     label = "Finalizacion",
                     modifier = Modifier,
-                    onSelectedDate = { d -> onSelectedDateFinal(d) }
+                    onSelectedDate = { d ->
+                        if (d != null) {
+                        onSelectedDate(d)
+                    } }
                 )
         }
             Column(

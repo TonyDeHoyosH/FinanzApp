@@ -228,6 +228,7 @@ fun HomeContent(
             if (showAddBalance){
                 AddBalanceModal(
                     onDismissRequest = { showAddBalance = false},
+                    homeVM
                 )
             }
             Spacer(modifier = Modifier.padding(vertical = 20.dp))
@@ -258,19 +259,21 @@ fun HomeContent(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(userInfo.lastExpenses){ it ->
+                items(userInfo.lastExpens){ it ->
                     val categoryAppearance = CategoryMap[it.category] ?: CategoryMap["Otros"]!!
+                    if (it.typeTransaction == "Expense"){
                     SelectCardComponent(
                         label = it.description,
                         imageVector = categoryAppearance.icon,
                         selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
                         onClick = {  },
-                        date = it.date,
+                        date = it.date.toString(),
                         amount = it.amount.toString(),
                         iconColor = categoryAppearance.iconColor,
                         bgColor = categoryAppearance.backgroundColor,
                         amountColor = Color(0xFFE53935),
                     )
+                    }
                 }
             }
         }
