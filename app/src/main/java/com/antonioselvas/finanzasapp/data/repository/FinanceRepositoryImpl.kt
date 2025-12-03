@@ -65,5 +65,33 @@ class FinanceRepositoryImpl @Inject constructor(
             .toObjects(Expense::class.java)
     }
 
+    override suspend fun getUserName(uid: String): String {
+        return try {
+            val doc = firestore.collection("Users").document(uid).get().await()
+
+            doc.getString("name") ?: "Usuario"
+        } catch (e: Exception) {
+            "Usuario"
+        }
+    }
+
+    override suspend fun getLastFiveExpenses(uid: String): List<Expense> {
+        return try {
+
+            firestore.collection("Users")
+                .document(uid)
+                .collection("expenses")
+                .limit(5)
+                .get()
+                .await()
+                .map { document ->
+                    document.toObject(Expense::class.java).copy(id = document.id)
+                }
+        } catch (e: Exception) {
+            Log.e("FinanceRepo", "Error getting expenses: ${e.message}")
+            emptyList()
+        }
+    }
+
 
 }

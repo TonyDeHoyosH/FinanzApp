@@ -2,7 +2,6 @@ package com.antonioselvas.finanzasapp.domain.usecases
 
 import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
 import com.antonioselvas.finanzasapp.domain.models.Expense
-import com.antonioselvas.finanzasapp.domain.models.ExpenseType
 import jakarta.inject.Inject
 
 class AddExpenseUseCase @Inject constructor(
@@ -13,6 +12,8 @@ class AddExpenseUseCase @Inject constructor(
         amount: Double,
         description: String,
         category: String,
+        type: String,
+        date: String
     ): Result<Unit> {
         return try {
             val currentBalance = repository.getCurrentBalance(uid)
@@ -23,8 +24,8 @@ class AddExpenseUseCase @Inject constructor(
                     amount = amount,
                     description = description,
                     category = category,
-                    type = ExpenseType.NORMAL,
-                    date = System.currentTimeMillis(),
+                    type = type,
+                    date = date,
                 )
                 repository.addExpense(uid, expense)
                 Result.success(Unit)

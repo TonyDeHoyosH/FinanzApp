@@ -42,6 +42,7 @@ import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import primaryColor
 import primaryText
 import secondaryText
@@ -52,12 +53,8 @@ const val NEW_EXPENSE_ROUTE = "NewExpense"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewExpenseView(navController: NavHostController) {
-    var expense by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+fun NewExpenseView(navController: NavHostController, homeViewModel: HomeViewModel) {
+
 
     Scaffold(
         containerColor = Color.White,
@@ -89,17 +86,8 @@ fun NewExpenseView(navController: NavHostController) {
     ) {
         NewExpenseContent(
             it,
-            expense = expense,
-            onExpenseChange = { e -> expense = e },
-            category = category,
-            onCategory = { c -> category = c },
-            type = type,
-            onType = { t -> type = t },
-            selectedDate = selectedDate,
-            onSelectedDate = { d -> selectedDate = d },
-            description = description,
-            onDescription = { p -> description = p },
-            navController
+            navController,
+            homeViewModel
         )
     }
 }
@@ -108,19 +96,16 @@ fun NewExpenseView(navController: NavHostController) {
 @Composable
 fun NewExpenseContent(
     paddingValues: PaddingValues,
-    expense: String,
-    onExpenseChange: (String) -> Unit,
-    category: String,
-    onCategory: (String) -> Unit,
-    type: String,
-    onType: (String) -> Unit,
-    selectedDate: String,
-    onSelectedDate: (String) -> Unit,
-    description: String,
-    onDescription: (String) -> Unit,
     navController: NavHostController,
-) {
-    val categories: MutableList<String> = remember {
+    homeViewModel: HomeViewModel,
+
+    ) {
+    var expense by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf("") }
+    var categories: MutableList<String> = remember {
         mutableListOf(
             "Alimentación",
             "Transporte",
@@ -161,7 +146,7 @@ fun NewExpenseContent(
                 onValueChange = { newValue ->
 
                     if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                        onExpenseChange(newValue)
+                       expense = newValue
                     }
                 },
                 textStyle = LocalTextStyle.current.copy(
@@ -211,38 +196,47 @@ fun NewExpenseContent(
                 placeHolder = "Ej: Café con amigos",
                 value = description,
                 onValue = { p ->
-                    onDescription(p)
+                    description = p
                 }
             )
             DropDownComponent(
                 label = "Categoria",
                 listOfCategories = categories,
                 selectedText = category,
-                onSelectedText = { c -> onCategory(c) }
+                onSelectedText = { c -> category = c }
             )
             DropDownComponent(
                 label = "Tipo",
                 listOfCategories = types,
                 selectedText = type,
-                onSelectedText = { t -> onType(t) }
+                onSelectedText = { t -> type = t }
             )
             DatePickerFieldToModal(
                 modifier = Modifier,
-                onSelectedDate = { d -> onSelectedDate(d) }
+                onSelectedDate = { d -> selectedDate = d }
             )
 
 
         }
+        val isFormValid = expense.isNotEmpty() && description.isNotEmpty() && category.isNotEmpty()
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
         ) {
             ButtonComponent(
                 navController = {
+                    homeViewModel.addExpense(
+                        amount = expense.toDouble(),
+                        description = description,
+                        category = category,
+                        type = type,
+                        date = selectedDate,
+                        isShared = false
+                    )
                     navController.navigate(HOME_ROUTE)
                 },
                 label = "Registrar Gasto",
-                enable = true
+                enable = isFormValid
 
 
             )

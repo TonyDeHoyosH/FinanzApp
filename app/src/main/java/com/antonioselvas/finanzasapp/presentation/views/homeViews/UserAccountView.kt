@@ -35,8 +35,10 @@ import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.ProfilePictureComponent
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import primaryColor
 import red
+import androidx.compose.runtime.collectAsState
 
 const val USER_ACCOUNT_ROUTE = "user_account"
 
@@ -46,7 +48,8 @@ const val USER_ACCOUNT_ROUTE = "user_account"
 fun UserAccountView(
     rootNavController: NavHostController,
     loginVM: AuthViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    homeVM: HomeViewModel
 ) {
     Scaffold(
         topBar = {
@@ -75,13 +78,17 @@ fun UserAccountView(
                 .fillMaxSize()
                 .padding(it)
         )
-        UserAccountContent(rootNavController, loginVM)
+        UserAccountContent(rootNavController, loginVM, homeVM)
     }
 }
 
 
 @Composable
-fun UserAccountContent(rootNavController: NavHostController, loginVM: AuthViewModel) {
+fun UserAccountContent(
+    rootNavController: NavHostController,
+    loginVM: AuthViewModel,
+    homeVM: HomeViewModel
+) {
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -106,7 +113,7 @@ fun UserAccountContent(rootNavController: NavHostController, loginVM: AuthViewMo
                 modifier = Modifier
             ){
                 Text(
-                    text = "The_Tito",
+                    text = homeVM.userInfo.collectAsState().value.name,
                     color = Color.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,

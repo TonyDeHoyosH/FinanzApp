@@ -6,3 +6,11 @@ data class User(
     val email: String,
     val onboardingCompleted: Boolean
 )
+
+
+data class CompleteUserInfo(
+    val idUser: String = "",
+    val name: String = "",
+    val email: String ="",
+    val lastExpenses: List<Expense> = emptyList()
+)
