@@ -8,10 +8,15 @@ import androidx.compose.material.icons.outlined.Coffee
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class Category(
     val name: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val amount: Double? = null,
+    val color: Color? = null,
+    val percentage: Float? = null,
+
 )
 

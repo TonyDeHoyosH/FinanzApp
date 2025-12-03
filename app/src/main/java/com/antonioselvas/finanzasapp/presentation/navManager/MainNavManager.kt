@@ -26,6 +26,9 @@ import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitA
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountView
 import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.STATISTICS_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.StatisticsContent
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.StatisticsView
 
 
 const val MAIN_NAV_ROUTE = "MainNav"
@@ -63,6 +66,8 @@ fun MainNavManager(
             composable(SPLIT_ACCOUNT_ROUTE) { SplitAccountView(navController) }
 
             composable(NEW_FIXED_EXPENSE_ROUTE) { NewFixedExpenseView() }
+
+            composable (STATISTICS_ROUTE) { StatisticsView(navController) }
         }
     }
 
