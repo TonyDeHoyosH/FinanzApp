@@ -1,7 +1,9 @@
 package com.antonioselvas.finanzasapp.di
 
-import com.antonioselvas.finanzasapp.data.repository.FinanceRepositoryImpl
 import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
+import com.antonioselvas.finanzasapp.domain.interfaces.SplitAccountRepository
+import com.antonioselvas.finanzasapp.infrastructure.repository.FinanceRepositoryImpl
+import com.antonioselvas.finanzasapp.infrastructure.repository.splitAccountRepositoryImpl
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -22,4 +24,10 @@ object AppModule {
     fun provideFinanceRepository(
         firestore: FirebaseFirestore
     ): FinanceRepository = FinanceRepositoryImpl(firestore)
+
+    @Provides
+    @Singleton
+    fun provideSplitAccountRepository(
+        firestore: FirebaseFirestore
+    ): SplitAccountRepository = splitAccountRepositoryImpl(firestore)
 }

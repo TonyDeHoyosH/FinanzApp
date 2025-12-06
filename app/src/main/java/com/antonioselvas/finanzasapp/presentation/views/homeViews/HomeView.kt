@@ -57,6 +57,9 @@ import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import gradientBlue
 import primaryColor
 import primaryText
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 const val HOME_ROUTE = "Home"
@@ -261,17 +264,24 @@ fun HomeContent(
             ) {
                 items(userInfo.lastExpens){ it ->
                     val categoryAppearance = CategoryMap[it.category] ?: CategoryMap["Otros"]!!
-                    if (it.typeTransaction == "Expense"){
+
+                    val numPersons = if (it.divisionForm != null) {
+                        it.users.size
+                    } else {
+                        null
+                    }
+                    if (it.typeTransaction == "expense"){
                     SelectCardComponent(
                         label = it.description,
                         imageVector = categoryAppearance.icon,
                         selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
                         onClick = {  },
-                        date = it.date.toString(),
+                        date = convertMillisToDate(it.date),
                         amount = it.amount.toString(),
                         iconColor = categoryAppearance.iconColor,
                         bgColor = categoryAppearance.backgroundColor,
                         amountColor = Color(0xFFE53935),
+                        numPersons = numPersons
                     )
                     }
                 }
@@ -279,6 +289,11 @@ fun HomeContent(
         }
 
     }
+}
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
 }
 
 //@Preview(showBackground = true)

@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel @Inject constructor(
     private val addExpenseUseCase: AddExpenseUseCase,
     private val financeRepository: FinanceRepository
-
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = Firebase.auth

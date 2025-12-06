@@ -11,6 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.Alert
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.OnboardingViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
 import com.antonioselvas.finanzasapp.presentation.views.LOGIN_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.LoginView
 import com.antonioselvas.finanzasapp.presentation.views.REGISTER_ROUTE
@@ -21,15 +25,12 @@ import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.AddBalan
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.BALANCE_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GOAL_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.GoalView
-import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_CATEGORY_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SELECT_FIXED_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectCategoriesView
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.SelectFixedView
+import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WELCOME_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.onboardingViews.WelcomeView
-import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
-import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
-import com.antonioselvas.finanzasapp.presentation.viewModels.OnboardingViewModel
 
 @Composable
 fun NavManager(loginVM: AuthViewModel) {
@@ -112,7 +113,8 @@ fun NavManager(loginVM: AuthViewModel) {
 
             composable(MAIN_NAV_ROUTE) {
                 val homeVM = hiltViewModel<HomeViewModel>()
-                MainNavManager(loginVM, rootNavController, homeVM) }
+                val splitVM = hiltViewModel<SplitAccountViewModel>()
+                MainNavManager(loginVM, rootNavController, homeVM, splitVM) }
         }
 
         navigation(

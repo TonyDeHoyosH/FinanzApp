@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.CardSplitAccount
 import com.antonioselvas.finanzasapp.components.CardSplitAccountAddUser
-import com.antonioselvas.finanzasapp.domain.models.SplitAccountUser
+import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import gradientYellow
 import primaryColor
 import primaryText
@@ -155,7 +155,7 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
         }
         val users = remember {
             mutableStateListOf(
-                SplitAccountUser(
+                SplitAccount(
                     id = "1",
                     name = "Luis",
                     amount = 200f,
@@ -163,7 +163,7 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
                     paid = false,
                     deleted = false,
                 ),
-                SplitAccountUser(
+                SplitAccount(
                     id = "2",
                     name = "Andrea",
                     amount = 400f,

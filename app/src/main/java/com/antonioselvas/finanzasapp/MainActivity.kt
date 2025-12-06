@@ -6,10 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.antonioselvas.finanzasapp.presentation.navManager.NavManager
-import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
+import com.antonioselvas.finanzasapp.ui.theme.FinancesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 
 
 @AndroidEntryPoint

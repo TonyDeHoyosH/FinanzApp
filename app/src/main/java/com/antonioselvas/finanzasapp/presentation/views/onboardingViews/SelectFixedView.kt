@@ -36,7 +36,6 @@ import bgYellow
 import com.antonioselvas.finanzasapp.components.onboarding.NextButtonComponent
 import com.antonioselvas.finanzasapp.components.onboarding.SelectCardComponent
 import com.antonioselvas.finanzasapp.components.onboarding.Stepper
-import com.antonioselvas.finanzasapp.dataStores.StoreOnBoarding
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import green
 import kotlinx.coroutines.CoroutineScope

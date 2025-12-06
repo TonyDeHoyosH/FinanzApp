@@ -42,7 +42,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antonioselvas.finanzasapp.domain.models.SplitAccountUser
+import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
 import primaryColor
 import primaryText
@@ -52,10 +52,10 @@ import yellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardSplitAccount(
-    user: SplitAccountUser,
+    user: SplitAccount,
     onEdit: () -> Unit,
-    onComplete: (SplitAccountUser) -> Unit,
-    onDelete: (SplitAccountUser) -> Unit,
+    onComplete: (SplitAccount) -> Unit,
+    onDelete: (SplitAccount) -> Unit,
     modifier: Modifier = Modifier,
     amountColor: Color = Color.Red,
     labelColor: Color = primaryText

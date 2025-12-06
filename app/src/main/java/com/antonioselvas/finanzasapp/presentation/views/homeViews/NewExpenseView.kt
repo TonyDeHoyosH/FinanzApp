@@ -229,7 +229,7 @@ fun NewExpenseContent(
                         amount = expense.toDouble(),
                         description = description,
                         category = category,
-                        typeTransaction = "Expense",
+                        typeTransaction = "expense",
                         type = type,
                         date = selectedDate!!
                     )
