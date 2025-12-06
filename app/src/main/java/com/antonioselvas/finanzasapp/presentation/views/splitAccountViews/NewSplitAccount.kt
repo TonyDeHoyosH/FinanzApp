@@ -42,16 +42,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.CardSplitAccount
 import com.antonioselvas.finanzasapp.components.CardSplitAccountAddUser
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
-import com.antonioselvas.finanzasapp.domain.models.SplitAccountUser
+import com.antonioselvas.finanzasapp.domain.models.SplitAccount
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
 import primaryColor
 import primaryText
 import secondaryText
@@ -60,35 +61,10 @@ import secondaryText
 const val NEW_SPLIT_ACCOUNT_ROUTE = "NewSplitAccount"
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun NewSplitAccountView() {
-    var expense by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var divisionForm by remember { mutableStateOf("") }
-    val users: MutableList<SplitAccountUser> = remember {
-        mutableStateListOf(
-            SplitAccountUser(
-                id = "1",
-                name = "Emilia",
-                amount = 300f,
-                paidAmount = 0f,
-                paid = false,
-                deleted = false
-            ),
-            SplitAccountUser(
-                id = "2",
-                name = "Andrea",
-                amount = 300f,
-                paidAmount = 0f,
-                paid = false,
-                deleted = false
-            )
-        )
-    }
+fun NewSplitAccountView(navController: NavController, splitVM: SplitAccountViewModel) {
+
+    val users: MutableList<SplitAccount> = remember { mutableStateListOf() }
 
     Scaffold(
         containerColor = Color.White,
@@ -107,7 +83,9 @@ fun NewSplitAccountView() {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { }
+                        onClick = {
+                            navController.popBackStack()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
@@ -120,19 +98,10 @@ fun NewSplitAccountView() {
     ) {
         NewSplitAccountContent(
             it,
-            expense = expense,
-            onExpenseChange = { e -> expense = e },
-            category = category,
-            onCategory = { c -> category = c },
-            type = type,
-            onType = { t -> type = t },
-            onSelectedDate = { d -> selectedDate = d },
-            division = divisionForm,
-            onDivisionForm = { v -> divisionForm = v },
             users = users,
-            description = description,
-            onDescription = { p -> description = p},
-            addUser = { u -> users.add(u) }
+            addUser = { u -> users.add(u) },
+            navController,
+            splitVM
         )
     }
 }
@@ -140,20 +109,19 @@ fun NewSplitAccountView() {
 @Composable
 fun NewSplitAccountContent(
     paddingValues: PaddingValues,
-    expense: String,
-    onExpenseChange: (String) -> Unit,
-    category: String,
-    onCategory: (String) -> Unit,
-    type: String,
-    onType: (String) -> Unit,
-    onSelectedDate: (Long) -> Unit,
-    division: String,
-    onDivisionForm: (String) -> Unit,
-    users: MutableList<SplitAccountUser>,
-    addUser: (SplitAccountUser) -> Unit,
-    description: String,
-    onDescription: (String) -> Unit,
+    users: MutableList<SplitAccount>,
+    addUser: (SplitAccount) -> Unit,
+    navController: NavController,
+    splitVM: SplitAccountViewModel,
 ) {
+
+    var expense by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    var divisionForm by remember { mutableStateOf("") }
+    var subTotal: Double = 0.0
 
     var showAddFriend by remember { mutableStateOf(false) }
 
@@ -182,7 +150,7 @@ fun NewSplitAccountContent(
         )
     }
 
-    val divisionForm: MutableList<String> = remember {
+    val divisionForms: MutableList<String> = remember {
         mutableListOf(
             "Equitativo",
             "Personalizado"
@@ -205,7 +173,7 @@ fun NewSplitAccountContent(
                 onValueChange = { newValue ->
 
                     if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                        onExpenseChange(newValue)
+                        expense = newValue
                     }
                 },
                 textStyle = LocalTextStyle.current.copy(
@@ -251,7 +219,7 @@ fun NewSplitAccountContent(
                 placeHolder = "Ej: Café con amigos",
                 value = description,
                 onValue = {
-                    onDescription(it)
+                    description = it
                 }
             )
 
@@ -259,21 +227,21 @@ fun NewSplitAccountContent(
                 label = "Categoria",
                 listOfCategories = categories,
                 selectedText = category,
-                onSelectedText = { c -> onCategory(c) }
+                onSelectedText = { category = it }
             )
 
             DropDownComponent(
                 label = "Forma División",
-                listOfCategories = divisionForm,
-                selectedText = division,
-                onSelectedText = { v -> onDivisionForm(v) }
+                listOfCategories = divisionForms,
+                selectedText = divisionForm,
+                onSelectedText = { divisionForm = it }
             )
 
             DropDownComponent(
                 label = "Tipo",
                 listOfCategories = types,
                 selectedText = type,
-                onSelectedText = { t -> onType(t) }
+                onSelectedText = { type = it }
             )
 
 
@@ -281,12 +249,18 @@ fun NewSplitAccountContent(
                 modifier = Modifier,
                 onSelectedDate = { d ->
                     if (d != null) {
-                        onSelectedDate(d)
+                        selectedDate = d
                     }
                 }
             )
         }
 
+        users.forEach { user ->
+            subTotal = subTotal + user.amount
+        }
+        val isEquitable = divisionForm == "Equitativo"
+
+        val totalExpense = expense.toDoubleOrNull() ?: 0.0
 
 
 
@@ -301,7 +275,9 @@ fun NewSplitAccountContent(
                     .padding(top = 8.dp, bottom = 8.dp)
                     .clickable(
                         onClick = {
-                            showAddFriend = true
+                            if (totalExpense > 0.0) {
+                                showAddFriend = true
+                            }
                         }
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -316,16 +292,32 @@ fun NewSplitAccountContent(
 
             }
 
-            if (showAddFriend) {
+
+            if (isEquitable && totalExpense > 0.0 && users.isNotEmpty()) {
+                val individualAmount = totalExpense / (users.size + 1)
+                users.forEachIndexed { index, user ->
+                    users[index] = user.copy(amount = individualAmount.toFloat())
+                }
+            }
+
+
+            if (showAddFriend && totalExpense > 0.0) {
                 CardSplitAccountAddUser(
                     createdUser = { user -> addUser(user) },
                     onDismissRequest = { showAddFriend = false },
-                    users = users
+                    users = users,
+                    isEquitable = isEquitable,
+                    subTotal = subTotal,
+                    total = totalExpense,
                 )
             }
 
+
+            Text("SubTotal: $${String.format("%.2f", subTotal)}")
+            Text("Monto restante: $${String.format("%.2f", totalExpense - subTotal)}")
             LazyColumn(
-                modifier = Modifier.height(160.dp)
+                modifier = Modifier
+                    .height(160.dp)
                     .padding(vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
 
@@ -351,8 +343,9 @@ fun NewSplitAccountContent(
             }
 
 
-
-
+            val isFormValid =
+                expense.isNotEmpty() && description.isNotEmpty() && category.isNotEmpty() && type.isNotEmpty() && selectedDate.toString()
+                    .isNotEmpty() && divisionForm.isNotEmpty()
 
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -360,10 +353,20 @@ fun NewSplitAccountContent(
             ) {
                 ButtonComponent(
                     navController = {
-
+                        splitVM.addSplitAccount(
+                            amount = expense.toDouble(),
+                            description = description,
+                            category = category,
+                            type = type,
+                            date = selectedDate!!,
+                            divisionForm = divisionForm,
+                            users = users,
+                            typeTransaction = "expense"
+                        )
+                        navController.navigate(SPLIT_ACCOUNT_ROUTE)
                     },
                     label = "Registrar Gasto",
-                    enable = true
+                    enable = isFormValid
 
 
                 )

@@ -1,4 +1,4 @@
-package com.antonioselvas.finanzasapp.data.repository
+package com.antonioselvas.finanzasapp.infrastructure.repository
 
 import android.util.Log
 import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
@@ -35,14 +35,12 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override suspend fun addExpense(uid: String, transaction: Transaction): Result<Unit> {
         return try {
-            // 1. Guardar gasto
             firestore.collection("Users")
                 .document(uid)
                 .collection("transactions")
                 .add(transaction)
                 .await()
 
-            // 2. Actualizar balance
             val currentBalance = getCurrentBalance(uid)
             firestore.collection("Users")
                 .document(uid)
@@ -111,16 +109,18 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override suspend fun getLastFiveExpenses(uid: String): List<Transaction> {
         return try {
-
             firestore.collection("Users")
                 .document(uid)
                 .collection("transactions")
+                .whereEqualTo("typeTransaction", "expense")
+                .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .limit(5)
                 .get()
                 .await()
                 .map { document ->
                     document.toObject(Transaction::class.java).copy(id = document.id)
                 }
+
         } catch (e: Exception) {
             Log.e("FinanceRepo", "Error getting expenses: ${e.message}")
             emptyList()

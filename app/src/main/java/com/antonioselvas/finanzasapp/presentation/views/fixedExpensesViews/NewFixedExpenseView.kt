@@ -43,7 +43,7 @@ import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
-import com.antonioselvas.finanzasapp.domain.models.SplitAccountUser
+import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import primaryColor
 import primaryText
 import secondaryText
@@ -62,9 +62,9 @@ fun NewFixedExpenseView() {
     var selectedDate by remember { mutableStateOf<Long?>(null) }
     var divisionForm by remember { mutableStateOf("") }
     var selectedDateFinal by remember { mutableStateOf("") }
-    val users: MutableList<SplitAccountUser> = remember {
+    val users: MutableList<SplitAccount> = remember {
         mutableStateListOf(
-            SplitAccountUser(
+            SplitAccount(
                 id = "1",
                 name = "Emilia",
                 amount = 300f,
@@ -72,7 +72,7 @@ fun NewFixedExpenseView() {
                 paid = false,
                 deleted = false
             ),
-            SplitAccountUser(
+            SplitAccount(
                 id = "2",
                 name = "Andrea",
                 amount = 300f,
@@ -146,8 +146,8 @@ fun NewFixedExpenseContent(
     onSelectedDateFinal: (String) -> Unit,
     division: String,
     onDivisionForm: (String) -> Unit,
-    users: MutableList<SplitAccountUser>,
-    addUser: (SplitAccountUser) -> Unit,
+    users: MutableList<SplitAccount>,
+    addUser: (SplitAccount) -> Unit,
     description: String,
     onDescription: (String) -> Unit,
 ) {

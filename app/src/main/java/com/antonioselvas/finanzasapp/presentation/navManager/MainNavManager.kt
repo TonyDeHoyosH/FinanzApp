@@ -8,6 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.BottomNavigationBar
+import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FixedExpenseView
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.NEW_FIXED_EXPENSE_ROUTE
@@ -24,8 +27,6 @@ import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountDetailsView
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountView
-import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
-import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 
 
 const val MAIN_NAV_ROUTE = "MainNav"
@@ -35,7 +36,8 @@ const val MAIN_NAV_ROUTE = "MainNav"
 fun MainNavManager(
     loginVM: AuthViewModel,
     rootNavController: NavHostController,
-    homeVM: HomeViewModel
+    homeVM: HomeViewModel,
+    splitVM: SplitAccountViewModel
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -58,9 +60,9 @@ fun MainNavManager(
 
             composable(SPLIT_ACCOUNT_DETAIL_ROUTE) { SplitAccountDetailsView(navController) }
 
-            composable(NEW_SPLIT_ACCOUNT_ROUTE) { NewSplitAccountView() }
+            composable(NEW_SPLIT_ACCOUNT_ROUTE) { NewSplitAccountView(navController, splitVM) }
 
-            composable(SPLIT_ACCOUNT_ROUTE) { SplitAccountView(navController) }
+            composable(SPLIT_ACCOUNT_ROUTE) { SplitAccountView(navController, splitVM) }
 
             composable(NEW_FIXED_EXPENSE_ROUTE) { NewFixedExpenseView() }
         }
