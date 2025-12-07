@@ -68,7 +68,7 @@ fun CardSplitAccountAddUser(
     ) {
         var name by remember { mutableStateOf("") }
         var amount by remember {
-            mutableStateOf(if (isEquitable) String.format("%.2f", equitableAmount) else "0.0")
+            mutableStateOf(if (isEquitable) String.format("%.2f", equitableAmount) else "")
         }
         Column(
             modifier = Modifier
@@ -211,13 +211,13 @@ fun CardSplitAccountAddUser(
                         .height(44.dp),
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                        val finalAmount = if (isEquitable) equitableAmount.toFloat() else currentAmountDouble.toFloat()
+                        val finalAmount = if (isEquitable) equitableAmount else currentAmountDouble
 
                         val newUser = SplitAccount(
                             id = (users.size + 1).toString(),
                             name = name,
                             amount = finalAmount,
-                            paidAmount = 0f,
+                            paidAmount = 0.0,
                             paid = false,
                             deleted = false
                         )

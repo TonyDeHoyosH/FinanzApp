@@ -2,9 +2,11 @@ package com.antonioselvas.finanzasapp.presentation.views.splitAccountViews
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,8 +27,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.CardSplitAccount
 import com.antonioselvas.finanzasapp.components.CardSplitAccountAddUser
-import com.antonioselvas.finanzasapp.domain.models.SplitAccount
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.SplitUiStateDetails
 import gradientYellow
 import primaryColor
 import primaryText
@@ -49,7 +54,19 @@ const val SPLIT_ACCOUNT_DETAIL_ROUTE = "SplitAccountDetail"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SplitAccountDetailsView(navController: NavHostController) {
+fun SplitAccountDetailsView(
+    navController: NavHostController,
+    splitVM: SplitAccountViewModel,
+    id: String?
+) {
+
+    val uiStateDetails by splitVM.uiStateDetails.collectAsState()
+
+    id?.let {
+        LaunchedEffect(key1 = it) {
+            splitVM.getSplitAccountDetails(it)
+        }
+    }
     var showAddFriend by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -70,7 +87,7 @@ fun SplitAccountDetailsView(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = "Nombre de gasto",
+                        text = uiStateDetails.splitAccount?.description ?: "",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
@@ -107,14 +124,46 @@ fun SplitAccountDetailsView(navController: NavHostController) {
     ) {
         SplitAccountDetailsContent(
             it, showAddFriend,
-            onShowAddFriend = { s -> showAddFriend = s},
+            onShowAddFriend = { s -> showAddFriend = s },
+            splitVM,
+            uiStateDetails
         )
     }
 }
 
 
 @Composable
-fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Boolean, onShowAddFriend: (Boolean) -> Unit) {
+fun SplitAccountDetailsContent(
+    paddingValues: PaddingValues,
+    showAddFriend: Boolean,
+    onShowAddFriend: (Boolean) -> Unit,
+    splitVM: SplitAccountViewModel,
+    uiStateDetails: SplitUiStateDetails
+) {
+    if (uiStateDetails.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    if (uiStateDetails.error !=null){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Error: ${uiStateDetails.error}")
+        }
+        return
+    }
+
+    val transaction = uiStateDetails.splitAccount
+
+    if (transaction == null){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Error")
+        }
+        return
+    }
+
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -122,13 +171,16 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+
         Column(
             modifier = Modifier
-                .padding(top = 60.dp, bottom = 60.dp)
+                .padding(top = 60.dp, bottom = 16.dp)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Row(
                 modifier = Modifier
                     .width(234.dp),
@@ -145,7 +197,7 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
                         color = primaryText
                     )
                     Text(
-                        text = "$50.00",
+                        text = "\$${String.format("%.2f", transaction.amount)}",
                         fontSize = 46.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryText
@@ -153,30 +205,29 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
                 }
             }
         }
-        val users = remember {
-            mutableStateListOf(
-                SplitAccount(
-                    id = "1",
-                    name = "Luis",
-                    amount = 200f,
-                    paidAmount = 0f,
-                    paid = false,
-                    deleted = false,
-                ),
-                SplitAccount(
-                    id = "2",
-                    name = "Andrea",
-                    amount = 400f,
-                    paidAmount = 0f,
-                    paid = false,
-                    deleted = false,
-                )
+        val totalPaid = transaction.users.sumOf { it.paidAmount }
+        val totalDue = transaction.users.sumOf { it.amount }
+        val globalRemainingDebt = totalDue - totalPaid
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Deuda total:",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                color = primaryText
+            )
+            Text(
+                text = "\$${String.format("%.2f", globalRemainingDebt)}",
+                fontSize = 46.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = primaryText
             )
         }
 
-
-
-
+        Spacer(Modifier.padding(vertical = 16.dp))
+        var users = transaction.users
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -184,13 +235,15 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
             items(
                 items = users,
                 key = { it.id }
-            ){ item ->
+            ) { item ->
                 CardSplitAccount(
                     user = item,
                     onEdit = {},
-                    onComplete = { onComplete ->
-                        users -= onComplete
-                        item.paid = !onComplete.paid
+                    onComplete = { userToComplete ->
+                        splitVM.markUserAsPaid(
+                            transactionId = transaction.id,
+                            debtorUserId = item.id
+                        )
                     },
                     onDelete = { onDelete ->
                         users -= onDelete
@@ -201,10 +254,10 @@ fun SplitAccountDetailsContent(paddingValues: PaddingValues, showAddFriend: Bool
 
             }
         }
-        if (showAddFriend){
+        if (showAddFriend) {
             CardSplitAccountAddUser(
-                onDismissRequest = { onShowAddFriend(false)},
-                createdUser =  {user -> users.add(user) },
+                onDismissRequest = { onShowAddFriend(false) },
+                createdUser = { user -> users.add(user) },
                 users = users
             )
         }

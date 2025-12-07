@@ -4,8 +4,8 @@ package com.antonioselvas.finanzasapp.domain.models
 data class SplitAccount(
     val id: String = "",
     val name: String = "",
-    val amount: Float= 0.0f,
-    var paidAmount: Float = 0.0f,
+    val amount: Double= 0.0,
+    var paidAmount: Double = 0.0,
     var paid: Boolean = false,
     var deleted: Boolean = false
 )

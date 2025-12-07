@@ -149,7 +149,7 @@ fun SplitAccountContent(
                         iconColor = categoryAppearance.iconColor,
                         bgColor = categoryAppearance.backgroundColor,
                         selectedIcon = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        onClick = {navController.navigate(SPLIT_ACCOUNT_DETAIL_ROUTE)},
+                        onClick = {navController.navigate("SplitAccountDetail/${it.id}")},
                         date = convertMillisToDate(it.date),
                         amount = it.amount.toString(),
                         amountColor = Color(0xFFE53935),
