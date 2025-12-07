@@ -32,7 +32,7 @@ data class SplitAccountTransaction(
     val type: String = "",
     val date: Long = 0L,
     val divisionForm: String = "",
-    val users: List<SplitAccount> = emptyList(),
+    val users: MutableList<SplitAccount> = mutableListOf(),
     val typeTransaction: String = ""
 )
 enum class Frequency { DAILY, WEEKLY, MONTHLY }

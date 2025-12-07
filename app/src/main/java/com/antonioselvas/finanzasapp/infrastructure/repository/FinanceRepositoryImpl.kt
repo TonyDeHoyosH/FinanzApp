@@ -120,7 +120,6 @@ class FinanceRepositoryImpl @Inject constructor(
                 .map { document ->
                     document.toObject(Transaction::class.java).copy(id = document.id)
                 }
-
         } catch (e: Exception) {
             Log.e("FinanceRepo", "Error getting expenses: ${e.message}")
             emptyList()

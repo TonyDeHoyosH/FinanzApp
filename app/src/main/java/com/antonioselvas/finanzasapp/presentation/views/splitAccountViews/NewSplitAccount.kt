@@ -296,7 +296,7 @@ fun NewSplitAccountContent(
             if (isEquitable && totalExpense > 0.0 && users.isNotEmpty()) {
                 val individualAmount = totalExpense / (users.size + 1)
                 users.forEachIndexed { index, user ->
-                    users[index] = user.copy(amount = individualAmount.toFloat())
+                    users[index] = user.copy(amount = individualAmount)
                 }
             }
 

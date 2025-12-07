@@ -67,16 +67,16 @@ fun NewFixedExpenseView() {
             SplitAccount(
                 id = "1",
                 name = "Emilia",
-                amount = 300f,
-                paidAmount = 0f,
+                amount = 300.0,
+                paidAmount = 0.0,
                 paid = false,
                 deleted = false
             ),
             SplitAccount(
                 id = "2",
                 name = "Andrea",
-                amount = 300f,
-                paidAmount = 0f,
+                amount = 300.0,
+                paidAmount = 0.0,
                 paid = false,
                 deleted = false
             )

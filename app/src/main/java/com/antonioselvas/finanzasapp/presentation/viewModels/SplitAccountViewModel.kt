@@ -6,6 +6,7 @@ import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
 import com.antonioselvas.finanzasapp.domain.interfaces.SplitAccountRepository
 import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import com.antonioselvas.finanzasapp.domain.models.SplitAccountInfo
+import com.antonioselvas.finanzasapp.domain.models.SplitAccountTransaction
 import com.antonioselvas.finanzasapp.domain.usecases.SplitAccountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,24 +20,28 @@ class SplitAccountViewModel @Inject constructor(
     private val splitAccountUseCase: SplitAccountUseCase,
     private val repository: FinanceRepository,
     private val splitAccountRepository: SplitAccountRepository
-) : ViewModel(){
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SplitUiState())
     val uiState: StateFlow<SplitUiState> = _uiState.asStateFlow()
+
+    private val _uiStateDetails = MutableStateFlow(SplitUiStateDetails())
+
+    val uiStateDetails: StateFlow<SplitUiStateDetails> = _uiStateDetails.asStateFlow()
 
     init {
         loadSplitAccountData()
     }
 
 
-    fun loadSplitAccountData(){
+    fun loadSplitAccountData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             try {
                 val uuid = repository.getCurrentUserId()
 
-                if (uuid.isNotEmpty()){
+                if (uuid.isNotEmpty()) {
                     val splitAccountList = splitAccountRepository.getSplitAccounts(uuid)
 
                     _uiState.value = _uiState.value.copy(
@@ -62,7 +67,7 @@ class SplitAccountViewModel @Inject constructor(
         divisionForm: String,
         users: MutableList<SplitAccount>,
         typeTransaction: String
-    ){
+    ) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -94,10 +99,58 @@ class SplitAccountViewModel @Inject constructor(
 
         }
     }
+
+    fun getSplitAccountDetails(
+        id: String
+    ) {
+        viewModelScope.launch {
+            _uiStateDetails.value = _uiStateDetails.value.copy(isLoading = true)
+
+            try {
+                val uuid = repository.getCurrentUserId()
+
+                if (uuid.isNotEmpty()) {
+                    val result = splitAccountRepository.getSplitAccountDetails(id, uuid)
+
+                    _uiStateDetails.value = _uiStateDetails.value.copy(
+                        splitAccount = result,
+                        isLoading = false
+                    )
+                }
+
+
+            } catch (e: Exception) {
+                _uiStateDetails.value = _uiStateDetails.value.copy(
+                    isLoading = false,
+                    error = "Error al cargar gasto compartido: ${e.message}"
+                )
+            }
+        }
+    }
+
+    fun markUserAsPaid(transactionId: String, debtorUserId: String) {
+        viewModelScope.launch {
+            val uuid = repository.getCurrentUserId()
+
+            splitAccountRepository.updateSplitAccountUser(
+                transactionId,
+                uuid,
+                debtorUserId,
+            )
+            getSplitAccountDetails(transactionId)
+        }
+    }
 }
 
 data class SplitUiState(
     val splitAccounts: List<SplitAccountInfo> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val message: String? = null
+)
+
+data class SplitUiStateDetails(
+    val splitAccount: SplitAccountTransaction? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
     val message: String? = null

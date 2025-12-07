@@ -76,5 +76,74 @@ class splitAccountRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getSplitAccountDetails(id: String, uid: String): SplitAccountTransaction? {
+        return try {
+            firestore.collection("Users")
+                .document(uid)
+                .collection("transactions")
+                .document(id)
+                .get()
+                .await()
+                .toObject(SplitAccountTransaction::class.java)
+
+        }catch (e: Exception) {
+            Log.e("FinanceRepo", "Error al obtener SplitAccounts: ${e.message}", e)
+            return null
+        }
+    }
+
+    override suspend fun updateSplitAccountUser(
+        transactionId: String,
+        uid: String,
+        debtorUserId: String,
+        newPaidAmount: Double?
+    ): Result<Unit> {
+        return try {
+            firestore.runTransaction { firestoreTransaction ->
+                val userRef = firestore.collection("Users").document(uid)
+                val transactionsRef = userRef.collection("transactions")
+                val transactionDocRef = transactionsRef.document(transactionId)
+
+                val transactionSnapshot = firestoreTransaction.get(transactionDocRef)
+
+                val currentTransaction = transactionSnapshot.toObject(SplitAccountTransaction::class.java)
+                    ?: throw IllegalStateException("Transaction not found or invalid.")
+
+                val updatedUsers = currentTransaction.users.map { user ->
+                    if (user.id == debtorUserId) {
+                        val amountDue = user.amount
+
+                        val amountToRegister = amountDue
+
+                        val paymentDelta = amountToRegister - user.paidAmount
+
+
+                        return@map user.copy(
+                            paidAmount = amountDue,
+                            paid = true,
+                        )
+                    }
+                    user
+                }
+
+                val userBalanceSnapshot = firestoreTransaction.get(userRef)
+                val currentBalance = userBalanceSnapshot.getDouble("currentBalance") ?: 0.0
+
+                val paymentDelta = updatedUsers.first { it.id == debtorUserId }.paidAmount - currentTransaction.users.first { it.id == debtorUserId }.paidAmount
+
+                val newBalance = currentBalance + paymentDelta
+
+                firestoreTransaction.update(transactionDocRef, "users", updatedUsers)
+                firestoreTransaction.update(userRef, "currentBalance", newBalance)
+
+            }.await()
+
+
+            Result.success(Unit)
+        }catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
 }

@@ -26,13 +26,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
+import androidx.compose.material3.SwipeToDismissBoxValue.Settled
+import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
-import androidx.compose.material3.SwipeToDismissBoxValue.Settled
-import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -67,10 +67,12 @@ fun CardSplitAccount(
                     onComplete(user)
                     true
                 }
+
                 EndToStart -> {
                     onDelete(user)
                     true
                 }
+
                 else -> false
             }
         },
@@ -83,108 +85,120 @@ fun CardSplitAccount(
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {
                 StartToEnd -> {
+                    val icon = if (user.paid) Icons.Default.CheckBox else Icons.Default.CheckBoxOutlineBlank
                     Icon(
-                        if (user.paid) Icons.Default.CheckBox else Icons.Default.CheckBoxOutlineBlank,
+                        icon,
                         contentDescription = if (user.paid) "Done" else "Not done",
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(shape = RoundedCornerShape(24.dp))
                             .drawBehind {
-                                drawRect(lerp(Color.LightGray, primaryColor, swipeToDismissBoxState.progress))
+                                val targetColor = if (user.paid) Color.Gray else primaryColor
+                                drawRect(lerp(Color.LightGray, targetColor, swipeToDismissBoxState.progress))
                             }
                             .wrapContentSize(Alignment.CenterStart)
                             .padding(12.dp),
                         tint = Color.White
                     )
                 }
+
                 EndToStart -> {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove item",
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(lerp(Color.LightGray, Color.Red, swipeToDismissBoxState.progress), shape = RoundedCornerShape(24.dp))
+                            .background(
+                                lerp(
+                                    Color.LightGray,
+                                    Color.Red,
+                                    swipeToDismissBoxState.progress
+                                ), shape = RoundedCornerShape(24.dp)
+                            )
                             .wrapContentSize(Alignment.CenterEnd)
                             .padding(12.dp),
                         tint = Color.White
                     )
                 }
+
                 Settled -> {}
             }
         }
     ) {
-    Column(
-        modifier = modifier
-            .shadow(
-                elevation = 6.dp,
-                shape = CircleShape,
-                clip = false
-            )
-            .border(
-                width = 1.dp,
-                color = Color.White,
-                shape = RoundedCornerShape(24.dp)
-            )
-            .background(color = Color.White, shape = RoundedCornerShape(24.dp)),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Row(
-            modifier = Modifier
-                .height(72.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 2.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = modifier
+                .shadow(
+                    elevation = 6.dp,
+                    shape = CircleShape,
+                    clip = false
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.White,
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .background(color = Color.White, shape = RoundedCornerShape(24.dp)),
+            horizontalAlignment = Alignment.Start
         ) {
-
-            Box(
+            Row(
                 modifier = Modifier
-                    .padding(10.dp)
-                    .width(52.dp)
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
+                    .height(72.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 2.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Outlined.AccountCircle,
-                    contentDescription = "",
-                    tint = primaryText,
-                )
-            }
 
-            // Columna con label y fecha (si existe)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                Text(
-                    text = user.name,
-                    fontFamily = JosefinSans,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = labelColor,
-                    maxLines = 1,
-                )
-//                Spacer(modifier = Modifier.padding(vertical = 0.3.dp))
-                Row {
-                    Text("-$",
+                Box(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .width(52.dp)
+                        .height(52.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Outlined.AccountCircle,
+                        contentDescription = "",
+                        tint = primaryText,
+                    )
+                }
+
+                // Columna con label y fecha (si existe)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Text(
+                        text = user.name,
                         fontFamily = JosefinSans,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        color = amountColor,)
-
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 18.sp,
+                        color = labelColor,
+                        maxLines = 1,
+                    )
+//                Spacer(modifier = Modifier.padding(vertical = 0.3.dp))
+                    Row {
                         Text(
-                            text = user.amount.toString(),
+                            "-$",
                             fontFamily = JosefinSans,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp,
-                            color = amountColor,
+                            color = amountColor
+                        )
+                        val remainingDebt = user.amount - user.paidAmount
+                        Text(
+                            text = String.format("%.2f", if (remainingDebt > 0) remainingDebt else 0.0),
+                            fontFamily = JosefinSans,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp,
+                            color = if (remainingDebt > 0) amountColor else primaryText.copy(alpha = 0.5f),
                         )
 
-                }
+                    }
 
-            }
+                }
 
 
                 Row(
@@ -209,10 +223,9 @@ fun CardSplitAccount(
                     }
 
 
-
+                }
             }
         }
-    }
 
     }
 }
