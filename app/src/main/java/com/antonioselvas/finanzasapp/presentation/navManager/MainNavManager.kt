@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.antonioselvas.finanzasapp.components.BottomNavigationBar
 import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.FixedExpenseViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
 import com.antonioselvas.finanzasapp.presentation.views.fixedExpensesViews.FIXED_EXPENSES_ROUTE
@@ -30,7 +31,7 @@ import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitA
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountView
 
 
-const val MAIN_NAV_ROUTE = "MainNav"
+const val MAIN_NAV_ROUTE = "main_nav"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -38,7 +39,8 @@ fun MainNavManager(
     loginVM: AuthViewModel,
     rootNavController: NavHostController,
     homeVM: HomeViewModel,
-    splitVM: SplitAccountViewModel
+    splitVM: SplitAccountViewModel,
+    fixedVM: FixedExpenseViewModel
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -57,7 +59,6 @@ fun MainNavManager(
 
             composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController, homeVM) }
 
-            composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView(navController) }
 
             composable(
                 route = "SplitAccountDetail/{id}",
@@ -74,7 +75,9 @@ fun MainNavManager(
 
             composable(SPLIT_ACCOUNT_ROUTE) { SplitAccountView(navController, splitVM) }
 
-            composable(NEW_FIXED_EXPENSE_ROUTE) { NewFixedExpenseView() }
+            composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView(navController, fixedVM) }
+
+            composable(NEW_FIXED_EXPENSE_ROUTE) { NewFixedExpenseView(navController, fixedVM) }
         }
     }
 

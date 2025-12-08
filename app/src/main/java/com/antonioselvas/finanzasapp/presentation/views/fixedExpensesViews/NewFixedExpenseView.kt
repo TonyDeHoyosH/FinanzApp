@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,53 +35,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
-import com.antonioselvas.finanzasapp.domain.models.SplitAccount
+import com.antonioselvas.finanzasapp.presentation.viewModels.FixedExpenseViewModel
 import primaryColor
 import primaryText
 import secondaryText
 
 
-const val NEW_FIXED_EXPENSE_ROUTE = "NewFixedExpense"
+const val NEW_FIXED_EXPENSE_ROUTE = "new_fixed_expense"
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun NewFixedExpenseView() {
-    var expense by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var divisionForm by remember { mutableStateOf("") }
-    var selectedDateFinal by remember { mutableStateOf("") }
-    val users: MutableList<SplitAccount> = remember {
-        mutableStateListOf(
-            SplitAccount(
-                id = "1",
-                name = "Emilia",
-                amount = 300.0,
-                paidAmount = 0.0,
-                paid = false,
-                deleted = false
-            ),
-            SplitAccount(
-                id = "2",
-                name = "Andrea",
-                amount = 300.0,
-                paidAmount = 0.0,
-                paid = false,
-                deleted = false
-            )
-        )
-    }
-
+fun NewFixedExpenseView(navController: NavController, fixedVM: FixedExpenseViewModel) {
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -100,7 +70,9 @@ fun NewFixedExpenseView() {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { }
+                        onClick = {
+                            navController.popBackStack()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
@@ -113,21 +85,8 @@ fun NewFixedExpenseView() {
     ) {
         NewFixedExpenseContent(
             it,
-            expense = expense,
-            onExpenseChange = { e -> expense = e },
-            category = category,
-            onCategory = { c -> category = c },
-            type = type,
-            onType = { t -> type = t },
-            selectedDate = selectedDate!!,
-            onSelectedDate = { d -> selectedDate = d },
-            onSelectedDateFinal = { f -> selectedDateFinal = f },
-            division = divisionForm,
-            onDivisionForm = { v -> divisionForm = v },
-            users = users,
-            description = description,
-            onDescription = { p -> description = p },
-            addUser = { u -> users.add(u) }
+            navController,
+            fixedVM
         )
     }
 }
@@ -135,24 +94,41 @@ fun NewFixedExpenseView() {
 @Composable
 fun NewFixedExpenseContent(
     paddingValues: PaddingValues,
-    expense: String,
-    onExpenseChange: (String) -> Unit,
-    category: String,
-    onCategory: (String) -> Unit,
-    type: String,
-    onType: (String) -> Unit,
-    selectedDate: Long,
-    onSelectedDate: (Long) -> Unit,
-    onSelectedDateFinal: (String) -> Unit,
-    division: String,
-    onDivisionForm: (String) -> Unit,
-    users: MutableList<SplitAccount>,
-    addUser: (SplitAccount) -> Unit,
-    description: String,
-    onDescription: (String) -> Unit,
+    navController: NavController,
+    fixedVM: FixedExpenseViewModel,
 ) {
+    var expense by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+    var frequency by remember { mutableStateOf("") }
+    var chargeDay by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
+
+    var chargeDayError by remember { mutableStateOf<String?>(null) }
 
     var showAddFriend by remember { mutableStateOf(false) }
+
+    val isButtonEnabled =
+        remember(expense, description, category, frequency, chargeDay, selectedDate) {
+            val amountIsValid = expense.toDoubleOrNull() != null && expense.toDouble() > 0
+            val chargeDayIsValid: Boolean
+
+            if (frequency == "Diario") {
+                chargeDayIsValid = true
+            } else {
+                val day = chargeDay.toIntOrNull()
+                chargeDayIsValid = day != null && day in 1..31
+            }
+
+            amountIsValid &&
+                    description.isNotBlank() &&
+                    category.isNotBlank() &&
+                    frequency.isNotBlank() &&
+                    type.isNotBlank() &&
+                    selectedDate != null &&
+                    chargeDayIsValid
+        }
 
     val categories: MutableList<String> = remember {
         mutableListOf(
@@ -179,11 +155,8 @@ fun NewFixedExpenseContent(
         )
     }
 
-    val divisionForm: MutableList<String> = remember {
-        mutableListOf(
-            "Equitativo",
-            "Personalizado"
-        )
+    val frequencies: MutableList<String> = remember {
+        mutableListOf("Mensual", "Semanal", "Diario", "Anual")
     }
 
     Column(
@@ -202,7 +175,7 @@ fun NewFixedExpenseContent(
                 onValueChange = { newValue ->
 
                     if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                        onExpenseChange(newValue)
+                        expense = newValue
                     }
                 },
                 textStyle = LocalTextStyle.current.copy(
@@ -248,7 +221,7 @@ fun NewFixedExpenseContent(
                 placeHolder = "Ej: Café con amigos",
                 value = description,
                 onValue = {
-                    onDescription(it)
+                    description = it
                 }
             )
 
@@ -256,65 +229,98 @@ fun NewFixedExpenseContent(
                 label = "Categoria",
                 listOfCategories = categories,
                 selectedText = category,
-                onSelectedText = { c -> onCategory(c) }
+                onSelectedText = { category = it }
             )
 
             DropDownComponent(
-                label = "Forma División",
-                listOfCategories = divisionForm,
-                selectedText = division,
-                onSelectedText = { v -> onDivisionForm(v) }
+                label = "Frecuencia",
+                listOfCategories = frequencies,
+                selectedText = frequency,
+                onSelectedText = {
+                    frequency = it
+                    chargeDay = ""
+                    chargeDayError = null
+                }
             )
 
             DropDownComponent(
                 label = "Tipo",
                 listOfCategories = types,
                 selectedText = type,
-                onSelectedText = { t -> onType(t) }
+                onSelectedText = { type = it }
             )
-
-
-
-
-                DatePickerFieldToModal(
-                    label = "Inicio",
-                    modifier = Modifier,
-                    onSelectedDate = { d ->
-                        if (d != null) {
-                            onSelectedDate(d)
+            if (frequency == "Mensual") {
+                TextFieldComponent(
+                    label = "Día de Cobro (1-31)",
+                    placeHolder = "Ej: 5 (para el día 5 de cada mes)",
+                    value = chargeDay,
+                    onValue = { newValue ->
+                        chargeDayError = null // Resetear error al escribir
+                        if (newValue.isEmpty() || newValue.matches(Regex("^\\d*$"))) {
+                            if (newValue.length <= 2) {
+                                chargeDay = newValue
+                            }
                         }
-                    }
-                )
-                DatePickerFieldToModal(
-                    label = "Finalizacion",
-                    modifier = Modifier,
-                    onSelectedDate = { d ->
-                        if (d != null) {
-                        onSelectedDate(d)
-                    } }
-                )
-        }
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Spacer(modifier = Modifier.padding(top = 32.dp))
-
-                ButtonComponent(
-                    navController = {
-
                     },
-                    label = "Registrar Gasto",
-                    enable = true
-
-
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    isError = chargeDayError != null,
+                    errorMessage = chargeDayError
                 )
-                Spacer(modifier = Modifier.padding(bottom = 32.dp))
-
+            } else {
+                if (chargeDay.isNotBlank()) {
+                    chargeDay = ""
+                }
             }
-        }
 
+
+
+
+            DatePickerFieldToModal(
+                label = "Inicio",
+                modifier = Modifier,
+                onSelectedDate = { d ->
+                    if (d != null) {
+                        selectedDate = d
+                    }
+                }
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Spacer(modifier = Modifier.padding(top = 32.dp))
+
+            ButtonComponent(
+                navController = {
+
+                    if (isButtonEnabled) {
+                        fixedVM.registerFixedExpense(
+                            amount = expense,
+                            description = description,
+                            category = category,
+                            type = type,
+                            frequency = frequency,
+                            chargeDay = chargeDay,
+                            startDate = selectedDate!!
+                        )
+                        navController.popBackStack()
+                    }
+                },
+                label = "Registrar Gasto",
+                enable = isButtonEnabled
+
+
+            )
+            Spacer(modifier = Modifier.padding(bottom = 32.dp))
+
+        }
     }
+
+}
 
 
 

@@ -19,12 +19,14 @@ data class Transaction(
 
 data class FixedExpense(
     val id: String = "",
-    val amount: Double,
-    val description: String,
-    val frequency: Frequency,
-    val chargeDay: Int,
-    val category: String,
-    val nextChargeDate: Long
+    val amount: Double = 0.0,
+    val description: String = "",
+    val frequency: String = "",
+    val chargeDay: Int = 1,
+    val category: String = "",
+    val type: String = "",
+    val startDate: Long = 0L,
+    val nextChargeDate: Long = 0L
 )
 
 
@@ -42,4 +44,4 @@ data class SplitAccountTransaction(
     @set:PropertyName("isCompleted")
     var isCompleted: Boolean = false
 )
-enum class Frequency { DAILY, WEEKLY, MONTHLY }
+enum class Frequency { DAILY, WEEKLY, MONTHLY, ANNUALLY }

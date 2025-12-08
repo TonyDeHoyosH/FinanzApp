@@ -12,6 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.antonioselvas.finanzasapp.components.Alert
 import com.antonioselvas.finanzasapp.presentation.viewModels.AuthViewModel
+import com.antonioselvas.finanzasapp.presentation.viewModels.FixedExpenseViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.HomeViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.OnboardingViewModel
 import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
@@ -114,7 +115,8 @@ fun NavManager(loginVM: AuthViewModel) {
             composable(MAIN_NAV_ROUTE) {
                 val homeVM = hiltViewModel<HomeViewModel>()
                 val splitVM = hiltViewModel<SplitAccountViewModel>()
-                MainNavManager(loginVM, rootNavController, homeVM, splitVM) }
+                val fixedVM = hiltViewModel<FixedExpenseViewModel>()
+                MainNavManager(loginVM, rootNavController, homeVM, splitVM, fixedVM) }
         }
 
         navigation(
