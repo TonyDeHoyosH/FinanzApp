@@ -35,23 +35,41 @@ class FinanceRepositoryImpl @Inject constructor(
 
     override suspend fun addExpense(uid: String, transaction: Transaction): Result<Unit> {
         return try {
-            firestore.collection("Users")
-                .document(uid)
-                .collection("transactions")
-                .add(transaction)
-                .await()
+            firestore.runTransaction { firestoreTransaction ->
+                val userRef = firestore.collection("Users").document(uid)
+                val transactionsRef = userRef.collection("transactions")
 
-            val currentBalance = getCurrentBalance(uid)
-            firestore.collection("Users")
-                .document(uid)
-                .update("currentBalance", currentBalance - transaction.amount)
-                .await()
+
+                val newTransactionRef = transactionsRef.document()
+                val newId = newTransactionRef.id
+
+
+                val transactionWithId = transaction.copy(
+                    id = newId
+                )
+
+
+                val userSnapshot = firestoreTransaction.get(userRef)
+                val currentBalance = userSnapshot.getDouble("currentBalance") ?: 0.0
+
+                val expenseAmount = transaction.amount
+                val newBalance = currentBalance - expenseAmount
+
+
+                firestoreTransaction.update(userRef, "currentBalance", newBalance)
+
+
+                firestoreTransaction.set(newTransactionRef, transactionWithId)
+
+            }.await()
 
             Result.success(Unit)
         } catch (e: Exception) {
+            Log.e("FinanceRepo", "Error al agregar gasto y actualizar balance: ${e.message}", e)
             Result.failure(e)
         }
     }
+
 
     override suspend fun getExpensesForChart(
         uid: String,

@@ -48,6 +48,7 @@ import androidx.navigation.NavController
 import com.antonioselvas.finanzasapp.components.ButtonComponent
 import com.antonioselvas.finanzasapp.components.CardSplitAccount
 import com.antonioselvas.finanzasapp.components.CardSplitAccountAddUser
+import com.antonioselvas.finanzasapp.components.CardSplitAccountEditAmount
 import com.antonioselvas.finanzasapp.components.DatePickerFieldToModal
 import com.antonioselvas.finanzasapp.components.DropDownComponent
 import com.antonioselvas.finanzasapp.components.TextFieldComponent
@@ -124,6 +125,9 @@ fun NewSplitAccountContent(
     var subTotal: Double = 0.0
 
     var showAddFriend by remember { mutableStateOf(false) }
+
+    var showEditModal by remember { mutableStateOf(false) }
+    var userToEdit by remember { mutableStateOf<SplitAccount?>(null) }
 
     val categories: MutableList<String> = remember {
         mutableListOf(
@@ -327,7 +331,12 @@ fun NewSplitAccountContent(
                     key = { it.id }) { user ->
                     CardSplitAccount(
                         user = user,
-                        onEdit = {},
+                        onEdit = {
+                            if (divisionForm == "Personalizado") {
+                                userToEdit = user
+                                showEditModal = true
+                            }
+                        },
                         onComplete = { onComplete ->
                             users -= onComplete
                             user.paid = !onComplete.paid
@@ -336,10 +345,29 @@ fun NewSplitAccountContent(
                             users -= onDelete
                             user.deleted = !onDelete.deleted
                         },
+                        showEditButton = divisionForm == "Personalizado",
                         modifier = Modifier.animateItem()
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 }
+            }
+
+            if (showEditModal && userToEdit != null && divisionForm == "Personalizado") {
+                CardSplitAccountEditAmount(
+                    onDismissRequest = {
+                        showEditModal = false
+                        userToEdit = null
+                    },
+                    userToEdit = userToEdit!!,
+                    onSaveEdit = { updatedUser ->
+                        val index = users.indexOfFirst { it.id == updatedUser.id }
+                        if (index != -1) {
+                            users[index] = updatedUser
+                        }
+                    },
+                    currentSubTotal = subTotal,
+                    totalExpense = totalExpense
+                )
             }
 
 

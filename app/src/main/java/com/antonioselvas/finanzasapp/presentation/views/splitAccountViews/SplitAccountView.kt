@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.antonioselvas.finanzasapp.components.SelectCardComponent
+import com.antonioselvas.finanzasapp.components.SplitAccountFilterSegmentedButton
 import com.antonioselvas.finanzasapp.domain.models.CategoryMap
 import com.antonioselvas.finanzasapp.presentation.viewModels.SplitAccountViewModel
 import gradientYellow
@@ -47,10 +49,18 @@ import java.util.Locale
 
 const val SPLIT_ACCOUNT_ROUTE = "SplitAccount"
 
+enum class SplitFilterType {
+    PENDING,
+    COMPLETED
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SplitAccountView(navController: NavHostController, splitVM: SplitAccountViewModel) {
+    LaunchedEffect(Unit) {
+        splitVM.loadSplitAccountData()
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier
@@ -104,6 +114,9 @@ fun SplitAccountContent(
     navController: NavHostController,
     splitVM: SplitAccountViewModel
 ){
+    val filteredAccounts by splitVM.filteredSplitAccounts.collectAsState()
+    val currentFilter by splitVM.filterType.collectAsState()
+
     val uiState by splitVM.uiState.collectAsState()
     Column(
         modifier = Modifier
@@ -112,6 +125,13 @@ fun SplitAccountContent(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        SplitAccountFilterSegmentedButton(
+            currentFilter = currentFilter,
+            onFilterSelected = { newFilter ->
+                splitVM.setFilter(newFilter)
+            }
+        )
 
         if (splitVM.uiState.collectAsState().value.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -141,7 +161,7 @@ fun SplitAccountContent(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(uiState.splitAccounts) { it ->
+                items(filteredAccounts) { it ->
                     val categoryAppearance = CategoryMap[it.category] ?: CategoryMap["Otros"]!!
                     SelectCardComponent(
                         label = it.description,

@@ -1,5 +1,6 @@
 package com.antonioselvas.finanzasapp.domain.interfaces
 
+import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import com.antonioselvas.finanzasapp.domain.models.SplitAccountInfo
 import com.antonioselvas.finanzasapp.domain.models.SplitAccountTransaction
 
@@ -19,5 +20,17 @@ interface SplitAccountRepository {
         uid: String,
         debtorUserId: String,
         newPaidAmount: Double? = null
+    ): Result<Unit>
+
+    suspend fun addUserToSplitAccount(
+        uid: String,
+        transactionId: String,
+        newUser: SplitAccount
+    ): Result<Unit>
+
+    suspend fun removeUserFromSplitAccount(
+        uid: String,
+        transactionId: String,
+        debtorUserId: String
     ): Result<Unit>
 }
