@@ -41,33 +41,22 @@ import yellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardSplitAccountAddUser(
+fun CardSplitAccountEditAmount(
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    amountColor: Color = Color.Red,
-    labelColor: Color = primaryText,
-    createdUser: (SplitAccount) -> Unit,
-    users: MutableList<SplitAccount>,
-    isEquitable: Boolean = false,
-    subTotal: Double = 0.0,
-    total: Double = 0.0
+    userToEdit: SplitAccount,
+    onSaveEdit: (SplitAccount) -> Unit,
+    currentSubTotal: Double,
+    totalExpense: Double,
 ) {
     var showAlert by remember { mutableStateOf(false) }
-    val equitableAmount = if (total > 0.0) {
-        val remainingUsersCount = users.size + 1
-        total / remainingUsersCount
-    } else {
-        0.0
-    }
 
+    var amount by remember {
+        mutableStateOf(String.format("%.2f", userToEdit.amount))
+    }
 
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
     ) {
-        var name by remember { mutableStateOf("") }
-        var amount by remember {
-            mutableStateOf(if (isEquitable) String.format("%.2f", equitableAmount) else "")
-        }
         Column(
             modifier = Modifier
                 .shadow(
@@ -81,16 +70,17 @@ fun CardSplitAccountAddUser(
                     shape = RoundedCornerShape(24.dp)
                 )
                 .background(color = Color.White, shape = RoundedCornerShape(24.dp))
-                .height(if (isEquitable) 240.dp else 280.dp)
+                .height(280.dp)
                 .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.padding(vertical = 12.dp))
             Text(
-                "Agregando un amigo",
-                fontSize = 22.sp,
+                "Editar Monto de ${userToEdit.name}",
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = primaryText
+                color = primaryText,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.padding(vertical = 12.dp))
             Column(
@@ -99,6 +89,7 @@ fun CardSplitAccountAddUser(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -109,17 +100,21 @@ fun CardSplitAccountAddUser(
                         ),
                     label = {
                         Text(
-                            text ="Nombre:",
+                            text ="Monto:",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Normal,
                             color = secondaryText )
                     },
-                    value = name,
-                    onValueChange = { name = it },
+                    value = amount,
+                    onValueChange = { newAmount ->
+                        if (newAmount.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
+                            amount = newAmount
+                        }
+                    },
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray
+                        fontWeight = FontWeight.SemiBold,
+                        color = primaryColor
                     ),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
@@ -129,73 +124,23 @@ fun CardSplitAccountAddUser(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
 
-                    )
-
-                if (!isEquitable) {
-                    TextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(
-                                width = 1.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(20.dp)
-                            ),
-                        label = {
-                            Text(
-                                text ="Monto:",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = secondaryText )
-                        },
-                        value = amount,
-                        onValueChange = { newAmount ->
-                            if (newAmount.matches(Regex("^\\d*\\.?\\d{0,2}$"))) {
-                                amount = newAmount
-                            }
-                        },
-                        textStyle = LocalTextStyle.current.copy(
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.SemiBold,
-                            color = primaryColor
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.White,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            errorIndicatorColor = Color.Transparent
-                        ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                } else {
-
-                    Text(
-                        text = "Monto Asignado: $${String.format("%.2f", equitableAmount)}",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = primaryColor,
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                val currentAmountDouble = amount.toDoubleOrNull() ?: 0.0
+                val newAmountDouble = amount.toDoubleOrNull() ?: 0.0
 
 
+                val subTotalWithoutCurrent = currentSubTotal - userToEdit.amount
+                val newSubTotal = subTotalWithoutCurrent + newAmountDouble
 
+                val isAmountValid = newAmountDouble > 0.0 && newSubTotal <= totalExpense
 
-                val isAmountValid = if (isEquitable) {
-                    true
-                } else {
-                    currentAmountDouble > 0.0 && (subTotal + currentAmountDouble) <= total
-                }
+                val isFormValid = isAmountValid
 
-                val isFormValid = name.isNotEmpty() && isAmountValid
-                if (!isEquitable && (subTotal + currentAmountDouble) > total) {
+                if (!isAmountValid && newSubTotal > totalExpense) {
                     showAlert = true
                     Text(
-                        text = "⚠️ El monto excede el gasto restante ($${String.format("%.2f", total - subTotal)})",
+                        text = "⚠️ El monto excede el gasto restante ($${String.format("%.2f", totalExpense - subTotalWithoutCurrent)})",
                         color = yellow,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -210,22 +155,16 @@ fun CardSplitAccountAddUser(
                         .height(44.dp),
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                        val finalAmount = if (isEquitable) equitableAmount else currentAmountDouble
-                        val newUser = SplitAccount(
-                            id = (users.size + 1).toString(),
-                            name = name,
-                            amount = finalAmount,
-                            paidAmount = 0.0,
-                            paid = false,
-                            deleted = false
+                        val updatedUser = userToEdit.copy(
+                            amount = newAmountDouble
                         )
-                        createdUser(newUser)
+                        onSaveEdit(updatedUser)
                         onDismissRequest()
                     },
                     enabled = isFormValid
                 ) {
                     Text(
-                        "Agregar",
+                        "Guardar",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -236,23 +175,3 @@ fun CardSplitAccountAddUser(
 
     }
 }
-
-
-//    @Preview(showBackground = true)
-//    @Composable
-//    fun PreviewCardSplit() {
-//        Scaffold {
-//            FinancesAppTheme {
-//                Box(
-//                    modifier = Modifier
-//                        .padding(it)
-//                        .fillMaxSize()
-//                ) {
-//
-//
-//                }
-//
-//            }
-//        }
-//    }
-//}

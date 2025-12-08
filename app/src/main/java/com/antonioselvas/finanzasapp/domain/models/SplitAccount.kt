@@ -18,5 +18,6 @@ data class SplitAccountInfo(
     val date: Long = 0L,
     val divisionForm: String = "",
     val usersNumber: Int = 0,
-    val typeTransaction: String = ""
+    val typeTransaction: String = "",
+    val isCompleted: Boolean
 )

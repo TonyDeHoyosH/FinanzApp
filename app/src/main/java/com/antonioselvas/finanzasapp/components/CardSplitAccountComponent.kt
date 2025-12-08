@@ -44,8 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import com.antonioselvas.finanzasapp.ui.theme.JosefinSans
+import green
 import primaryColor
 import primaryText
+import red
 import yellow
 
 
@@ -57,8 +59,9 @@ fun CardSplitAccount(
     onComplete: (SplitAccount) -> Unit,
     onDelete: (SplitAccount) -> Unit,
     modifier: Modifier = Modifier,
-    amountColor: Color = Color.Red,
-    labelColor: Color = primaryText
+    amountColor: Color = red,
+    labelColor: Color = primaryText,
+    showEditButton: Boolean = true
 ) {
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
@@ -180,20 +183,26 @@ fun CardSplitAccount(
                     )
 //                Spacer(modifier = Modifier.padding(vertical = 0.3.dp))
                     Row {
-                        Text(
-                            "-$",
-                            fontFamily = JosefinSans,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 20.sp,
-                            color = amountColor
-                        )
                         val remainingDebt = user.amount - user.paidAmount
+                        val isPaidComplete = user.paid
+                        val displayAmount = if (isPaidComplete) user.amount else remainingDebt
+
+                        val displayColor = if (isPaidComplete) green else amountColor
+                        val displaySign = if (isPaidComplete) "+" else "-"
                         Text(
-                            text = String.format("%.2f", if (remainingDebt > 0) remainingDebt else 0.0),
+                            displaySign,
                             fontFamily = JosefinSans,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp,
-                            color = if (remainingDebt > 0) amountColor else primaryText.copy(alpha = 0.5f),
+                            color = displayColor
+                        )
+
+                        Text(
+                            text = String.format("%.2f", displayAmount),
+                            fontFamily = JosefinSans,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp,
+                            color = displayColor,
                         )
 
                     }
@@ -206,23 +215,23 @@ fun CardSplitAccount(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
-                    IconButton(
-                        modifier = modifier.size(30.dp),
-                        onClick = { onEdit() },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = yellow
-                        )
+                    if (showEditButton) {
+                        IconButton(
+                            modifier = modifier.size(30.dp),
+                            onClick = { onEdit() },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = yellow
+                            )
 
-                    ) {
-                        Icon(
-                            modifier = modifier.size(20.dp),
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
+                        ) {
+                            Icon(
+                                modifier = modifier.size(20.dp),
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Editar monto",
+                                tint = Color.White
+                            )
+                        }
                     }
-
-
                 }
             }
         }

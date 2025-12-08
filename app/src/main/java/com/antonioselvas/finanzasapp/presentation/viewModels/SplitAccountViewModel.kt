@@ -1,5 +1,6 @@
 package com.antonioselvas.finanzasapp.presentation.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antonioselvas.finanzasapp.domain.interfaces.FinanceRepository
@@ -8,10 +9,14 @@ import com.antonioselvas.finanzasapp.domain.models.SplitAccount
 import com.antonioselvas.finanzasapp.domain.models.SplitAccountInfo
 import com.antonioselvas.finanzasapp.domain.models.SplitAccountTransaction
 import com.antonioselvas.finanzasapp.domain.usecases.SplitAccountUseCase
+import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitFilterType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +33,36 @@ class SplitAccountViewModel @Inject constructor(
     private val _uiStateDetails = MutableStateFlow(SplitUiStateDetails())
 
     val uiStateDetails: StateFlow<SplitUiStateDetails> = _uiStateDetails.asStateFlow()
+
+    private val _filterType = MutableStateFlow(SplitFilterType.PENDING)
+    val filterType: StateFlow<SplitFilterType> = _filterType.asStateFlow()
+
+    fun setFilter(type: SplitFilterType) {
+        _filterType.value = type
+    }
+
+    val filteredSplitAccounts: StateFlow<List<SplitAccountInfo>> =
+        _uiState.combine(_filterType) { uiState, filter ->
+
+            Log.d("SplitFilterDebug", "Filtro actual: $filter")
+
+            uiState.splitAccounts.forEach {
+                // Esto imprimirá el estado de CADA ítem que se recibe de Firebase
+                Log.d("SplitFilterDebug", "Item ID: ${it.id}, isCompleted: ${it.isCompleted}")
+            }
+
+            // La lógica de filtrado sigue igual
+            uiState.splitAccounts.filter { splitAccount ->
+                when (filter) {
+                    SplitFilterType.PENDING -> !splitAccount.isCompleted
+                    SplitFilterType.COMPLETED -> splitAccount.isCompleted
+                }
+            }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     init {
         loadSplitAccountData()
@@ -88,6 +123,7 @@ class SplitAccountViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         message = "Gasto agregado correctamente"
                     )
+                    loadSplitAccountData()
                 },
                 onFailure = { error ->
                     _uiState.value = _uiState.value.copy(
@@ -132,14 +168,73 @@ class SplitAccountViewModel @Inject constructor(
         viewModelScope.launch {
             val uuid = repository.getCurrentUserId()
 
-            splitAccountRepository.updateSplitAccountUser(
+            val result = splitAccountRepository.updateSplitAccountUser(
                 transactionId,
                 uuid,
                 debtorUserId,
             )
             getSplitAccountDetails(transactionId)
+            if (result.isSuccess) {
+                loadSplitAccountData()
+            }
+        }
+
+    }
+
+    fun addUserToSplitAccount(transactionId: String, newUser: SplitAccount) {
+        viewModelScope.launch {
+            val uuid = repository.getCurrentUserId()
+
+            _uiStateDetails.value = _uiStateDetails.value.copy(isLoading = true, error = null)
+
+            val result = splitAccountRepository.addUserToSplitAccount(
+                uid = uuid,
+                transactionId = transactionId,
+                newUser = newUser
+            )
+
+            if (result.isSuccess) {
+                _uiStateDetails.value = _uiStateDetails.value.copy(
+                    message = "Usuario agregado y gasto actualizado."
+                )
+                getSplitAccountDetails(transactionId)
+                loadSplitAccountData()
+            } else {
+                _uiStateDetails.value = _uiStateDetails.value.copy(
+                    isLoading = false,
+                    error = result.exceptionOrNull()?.message ?: "Error al agregar usuario."
+                )
+            }
         }
     }
+
+    fun removeUserFromSplitAccount(transactionId: String, debtorUserId: String) {
+        viewModelScope.launch {
+            val uuid = repository.getCurrentUserId()
+
+            _uiStateDetails.value = _uiStateDetails.value.copy(isLoading = true, error = null)
+
+            val result = splitAccountRepository.removeUserFromSplitAccount(
+                uid = uuid,
+                transactionId = transactionId,
+                debtorUserId = debtorUserId
+            )
+
+            if (result.isSuccess) {
+                _uiStateDetails.value = _uiStateDetails.value.copy(
+                    message = "Usuario eliminado y gasto actualizado."
+                )
+                getSplitAccountDetails(transactionId)
+                loadSplitAccountData()
+            } else {
+                _uiStateDetails.value = _uiStateDetails.value.copy(
+                    isLoading = false,
+                    error = result.exceptionOrNull()?.message ?: "Error al eliminar usuario."
+                )
+            }
+        }
+    }
+
 }
 
 data class SplitUiState(

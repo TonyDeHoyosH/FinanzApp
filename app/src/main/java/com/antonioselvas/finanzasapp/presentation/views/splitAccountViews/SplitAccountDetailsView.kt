@@ -147,7 +147,7 @@ fun SplitAccountDetailsContent(
         return
     }
 
-    if (uiStateDetails.error !=null){
+    if (uiStateDetails.error != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Error: ${uiStateDetails.error}")
         }
@@ -156,7 +156,7 @@ fun SplitAccountDetailsContent(
 
     val transaction = uiStateDetails.splitAccount
 
-    if (transaction == null){
+    if (transaction == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Error")
         }
@@ -245,20 +245,37 @@ fun SplitAccountDetailsContent(
                             debtorUserId = item.id
                         )
                     },
-                    onDelete = { onDelete ->
-                        users -= onDelete
-                        item.deleted = !onDelete.deleted
+                    onDelete = { userToDelete ->
+                        if (userToDelete.paidAmount == 0.0) {
+                            splitVM.removeUserFromSplitAccount(
+                                transactionId = transaction.id,
+                                debtorUserId = item.id
+                            )
+                        } else {
+
+                        }
                     },
+                    showEditButton = transaction.divisionForm == "Personalizado",
                     modifier = Modifier.animateItem()
                 )
 
             }
         }
+
+        val isEquitableDivision = transaction.divisionForm == "Equitativo"
         if (showAddFriend) {
             CardSplitAccountAddUser(
                 onDismissRequest = { onShowAddFriend(false) },
-                createdUser = { user -> users.add(user) },
-                users = users
+                createdUser = { newUser ->
+                    splitVM.addUserToSplitAccount(
+                        transactionId = transaction.id,
+                        newUser = newUser
+                    )
+                },
+                users = transaction.users,
+                isEquitable = isEquitableDivision,
+                total = transaction.amount,
+                subTotal = transaction.users.sumOf { it.amount }
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.antonioselvas.finanzasapp.domain.models
 
+import com.google.firebase.firestore.PropertyName
+
 data class Transaction(
     val id: String = "",
     val amount: Double = 0.0,
@@ -10,7 +12,9 @@ data class Transaction(
     val type: String = "",
     val divisionForm: String? = null,
     val users: List<SplitAccount> = emptyList()
-)
+){
+    var isCompleted: Boolean = false
+}
 
 
 data class FixedExpense(
@@ -33,6 +37,9 @@ data class SplitAccountTransaction(
     val date: Long = 0L,
     val divisionForm: String = "",
     val users: MutableList<SplitAccount> = mutableListOf(),
-    val typeTransaction: String = ""
+    val typeTransaction: String = "",
+    @get:PropertyName("isCompleted")
+    @set:PropertyName("isCompleted")
+    var isCompleted: Boolean = false
 )
 enum class Frequency { DAILY, WEEKLY, MONTHLY }
