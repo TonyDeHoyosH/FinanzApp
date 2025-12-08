@@ -9,7 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
 
-class splitAccountRepositoryImpl @Inject constructor(
+class SplitAccountRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ): SplitAccountRepository {
 
