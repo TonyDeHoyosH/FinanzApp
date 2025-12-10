@@ -26,12 +26,16 @@ import com.antonioselvas.finanzasapp.presentation.views.homeViews.USER_ACCOUNT_R
 import com.antonioselvas.finanzasapp.presentation.views.homeViews.UserAccountView
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.NEW_SPLIT_ACCOUNT_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.NewSplitAccountView
+import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_DETAIL_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SPLIT_ACCOUNT_ROUTE
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountDetailsView
 import com.antonioselvas.finanzasapp.presentation.views.splitAccountViews.SplitAccountView
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.STATISTICS_ROUTE
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.StatisticsContent
+import com.antonioselvas.finanzasapp.presentation.views.statisticsViews.StatisticsView
 
 
-const val MAIN_NAV_ROUTE = "main_nav"
+const val MAIN_NAV_ROUTE = "MainNav"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -59,6 +63,7 @@ fun MainNavManager(
 
             composable(NEW_EXPENSE_ROUTE) { NewExpenseView(navController, homeVM) }
 
+            composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView(navController, fixedVM) }
 
             composable(
                 route = "SplitAccountDetail/{id}",
@@ -78,6 +83,8 @@ fun MainNavManager(
             composable(FIXED_EXPENSES_ROUTE) { FixedExpenseView(navController, fixedVM) }
 
             composable(NEW_FIXED_EXPENSE_ROUTE) { NewFixedExpenseView(navController, fixedVM) }
+
+            composable (STATISTICS_ROUTE) { StatisticsView(navController) }
         }
     }
 

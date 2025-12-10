@@ -3,7 +3,6 @@ import androidx.compose.ui.graphics.Color
 
 val primaryColor = Color(0xFF388EFF)
 
-
 val yellow = Color(0xFFFFCE3A)
 val red = Color(0xFFFF3639)
 val green = Color(0xFF53D261)
@@ -26,3 +25,5 @@ val bg = Color(0xFFF3F3F3)
 val gradientBlue = Color(0xFF4193FF)
 val gradientRed = Color(0xFFFF4646)
 val gradientYellow = Color(0xFFFFCE3A)
+
+val gradientCyan = Color(0xFF9BE1FF)
